@@ -59,6 +59,7 @@ const {chromium}=require('/opt/npm-tools/node_modules/playwright');
  if(process.env.CFGJS) await p.evaluate(new Function(process.env.CFGJS));
  for(let k=0;k<400;k++){ r=await p.evaluate(()=>__botTick(1800)); if(k%10===0) console.log(JSON.stringify(r)); if(r.task>=53||r.t>(+process.env.STOP_T||4800)) break; }
  if(process.env.DUMP) console.log('DUMP',JSON.stringify(await p.evaluate(()=>({w:__cp.workers.map(w=>({r:w.role,x:+w.x.toFixed(2),y:+w.y.toFixed(2),st:w.state,job:w.job&&(w.job.kind||w.job.type||JSON.stringify(w.job).slice(0,80)),c:w.carry,asleep:w.asleep})),c:__cp.customers.map(c=>c.state+'@'+c.x.toFixed(1)+','+c.y.toFixed(1)),p:[__cp.player.x,__cp.player.y,__cp.player.carry],tray:__cp.tray}))));
+ if(process.env.SAVEOUT) require('fs').writeFileSync(process.env.SAVEOUT,await p.evaluate(()=>JSON.stringify(Object.assign({},__cp.S,{boostUntil:0,boostCd:0}))));
  const log=await p.evaluate(()=>__log);
  require('fs').writeFileSync(process.env.LOG||'/tmp/claude-0/botlog.json',JSON.stringify(log));console.log(log.map(([i,id,t])=>`${String(Math.floor(t/60)).padStart(2)}:${String(t%60).padStart(2,'0')}  #${i} ${id}`).join('\n'));
  const fin=await p.evaluate(()=>({S:__cp.S,workers:__cp.workers.map(w=>w.role),stations:__cp.stations.map(s=>s.id+':'+s.stock+'/'+s.ing)}));

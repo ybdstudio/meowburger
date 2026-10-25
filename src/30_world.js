@@ -11,13 +11,13 @@ function elevAt(x,y){const z=zoneAt(x,y);if(!z) return 0;if(z.elev) return z.ele
 function walkable(x,y,r){return !!(zoneAt(x-r,y-r)&&zoneAt(x+r,y-r)&&zoneAt(x-r,y+r)&&zoneAt(x+r,y+r))}
 function inLane(x,y){return x>=LANE.x0&&x<=LANE.x1&&y>=LANE.y0&&y<=LANE.y1}
 
-/* ---------------- floor + wall cache (Meow Burger P1 look) ---------------- */
+/* ---------------- floor + wall cache (Meow Sakura look: P1 floors, wooden plank walls, sakura) ---------------- */
 const floorCv=document.createElement('canvas'); let floorInfo={ox:0,oy:0,dpr:1};
 const WALL_H=3.0, CACHE_B={x0:-7,x1:27,y0:-7,y1:28};
 const ENVC={grass:'#8cc552',grassDk:'#79b444',tileA:'#f8dcb2',tileB:'#f3d2a3',grout:'#e9c18f',
   woodA:'#efa864',woodB:'#e89c58',woodLn:'#cf8447',curb:'#fbf1df',curbSide:'#e5cfa9',
-  wall:'#f8c888',wallLn:'#ebb474',wallDk:'#e7ad6a',cap:'#c98048',capDk:'#a1612f',capTop:'#d8935a',
-  base:'#9c9aa0',baseDk:'#7f7d84',wains:'#b9743d',wainsDk:'#96592b',path:'#f3e2c7',pathLn:'#e2cba7',road:'#6f7377',roadLn:'#f4f1e8'};
+  wall:'#f0cf9c',wallLn:'#d7ae78',wallDk:'#e6bf88',cap:'#c98048',capDk:'#a1612f',capTop:'#d8935a',
+  base:'#b9743d',baseDk:'#96592b',wains:'#b9743d',wainsDk:'#96592b',path:'#f3e2c7',pathLn:'#e2cba7',road:'#6f7377',roadLn:'#f4f1e8'};
 function floorKind(z){ return z.kind==='dining'||z.kind==='patio'?'wood':'tile'; }
 function seeded(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return s/2147483647}}
 function quad(D,x0,y0,x1,y1,z,fill,stroke,lw){poly(D,[D.P(x0,y0,z),D.P(x1,y0,z),D.P(x1,y1,z),D.P(x0,y1,z)],fill,stroke,lw)}
@@ -33,6 +33,7 @@ function buildFloorCache(TW){
   const rnd=seeded(11); g.strokeStyle=ENVC.grassDk; g.lineWidth=Math.max(1,D.OL*.8); g.lineCap='round';
   for(let i=0;i<700;i++){const x=CACHE_B.x0+rnd()*(CACHE_B.x1-CACHE_B.x0),y=CACHE_B.y0+rnd()*(CACHE_B.y1-CACHE_B.y0);const [sx,sy]=P(x,y);
     g.beginPath();g.moveTo(sx-T*.05,sy);g.lineTo(sx-T*.03,sy-T*.07);g.moveTo(sx,sy);g.lineTo(sx+T*.005,sy-T*.09);g.moveTo(sx+T*.05,sy);g.lineTo(sx+T*.035,sy-T*.06);g.stroke();}
+  scatterPetals(D,CACHE_B,520,23,(x,y)=>x>21.8||(x>-.4&&x<19&&y>-.4&&y<25.6));
   /* trees behind the back / left walls: painted before the walls so the walls hide their trunks */
   for(const d of GROUND_DECOR) if(d.k==='tree'&&(d.y<-.2||d.x<-.2)&&d.x<20&&d.y<20) drawTreeP1(d.x,d.y,d.s,d.seed,g,(x,y)=>P(x,y),T);
   /* street on the right + the cream path customers walk in on */
@@ -78,9 +79,11 @@ function drawZoneEdges(D,z,zs){const P=D.P,h=.12;
    the left wall (x=0) a wooden wainscot. Wall menus go up once the diner is renovated. */
 function drawWalls(D,stage){const P=D.P,g=D.g,H=WALL_H,t=.3,T=D.T;
   const lenX=18.5, lenY=zoneOpen(ZONES.find(z=>z.id==='kitchen2'))?19.6:11;
-  const brick=(axis,len)=>{ onFace(D,axis,axis==='y'?0:0,axis==='y'?0:len,H,g2=>{ g2.strokeStyle=ENVC.wallLn; g2.lineWidth=.03;
-      for(let r=1;r*.32<H-.2;r++){const v=r*.32; g2.beginPath();g2.moveTo(0,v);g2.lineTo(len,v);g2.stroke(); for(let u=(r%2?.35:0);u<len;u+=.7){g2.beginPath();g2.moveTo(u,v);g2.lineTo(u,v-.32);g2.stroke()}}
-      for(let i=0;i<len*1.5;i++){ const u=(i*.73)%len, v=.4+((i*1.37)%(H-.9)); g2.fillStyle=i%2?ENVC.wallDk:'#fbd29b'; g2.fillRect(u,v,.33,.14);} }); };
+  const brick=(axis,len)=>{ onFace(D,axis,0,axis==='y'?0:len,H,g2=>{ /* vertical wooden planks */
+      for(let u=0,i=0;u<len;u+=.36,i++){ if(i%3===1){ g2.fillStyle=ENVC.wallDk; g2.fillRect(u,0,.36,H); } if(i%5===3){ g2.fillStyle=SAK.plankLt; g2.fillRect(u+.04,0,.1,H); }
+        g2.strokeStyle=ENVC.wallLn; g2.lineWidth=.03; g2.beginPath(); g2.moveTo(u,0); g2.lineTo(u,H); g2.stroke(); }
+      g2.strokeStyle=ENVC.wallLn; g2.lineWidth=.035; for(const v of [.55,H-.75]){ g2.beginPath(); g2.moveTo(0,v); g2.lineTo(len,v); g2.stroke(); }
+      for(let i=0;i<len*1.2;i++){ const u=(i*.83)%len+.12, v=.7+((i*1.37)%(H-1.6)); g2.fillStyle='rgba(150,96,50,.35)'; g2.beginPath(); g2.ellipse(u,v,.05,.09,0,0,7); g2.fill(); } }); };
   /* left wall (x=0), drawn first */
   poly(D,[P(0,0,0),P(0,lenY,0),P(0,lenY,H),P(0,0,H)],ENVC.wall,null); brick('x',lenY);
   poly(D,[P(0,0,0),P(0,lenY,0),P(0,lenY,.55),P(0,0,.55)],ENVC.wains,INK,D.OL*.7);
@@ -104,6 +107,12 @@ function drawWalls(D,stage){const P=D.P,g=D.g,H=WALL_H,t=.3,T=D.T;
   const post=(x,y)=>box(D,x-.16,y-.16,0,.32,.32,H+.08,ENVC.capTop,ENVC.cap,ENVC.capDk);
   for(let x=6.5;x<lenX-.5;x+=6.5) post(x,.16); post(lenX-.16,.16);
   for(let y=7.5;y<lenY-.5;y+=7.5) post(.16,y); post(.16,lenY-.16); post(.16,.16);
+  /* paper lanterns hanging under the cap and sakura sprigs along it */
+  const ls=T*.62;
+  for(let x=2.2;x<lenX-.6;x+=2.6){ if(Math.abs(x-11.35)<.8) continue; const [lx,ly]=P(x,0,H-.12); paperLantern(g,lx,ly,ls); }
+  for(let y=2.4;y<lenY-.6;y+=2.6){ const [lx,ly]=P(0,y,H-.12); paperLantern(g,lx,ly,ls); }
+  for(let x=.9,i=0;x<lenX-.4;x+=1.55,i++){ const [a1,b1]=P(x,-.15,H+.02); sakuraSprig(g,a1,b1,T*.95,.46+(i%2?.15:-.1),i+3); }
+  for(let y=1.4,i=0;y<lenY-.4;y+=1.55,i++){ const [a1,b1]=P(-.15,y,H+.02); sakuraSprig(g,a1,b1,T*.95,Math.PI-.46-(i%2?.15:-.1),i+40); }
   /* renovated diner: wall menus above the back counters and in the dining corner */
   if(stage>=1){ const wm=(k,x,y,z,flip)=>{const e=ENV[k]; if(!e||!e.img) return; const w=T*.6, h=w*e.h/e.w, [sx,sy]=P(x,y,z); g.save(); g.translate(sx,sy); if(flip) g.scale(-1,1); g.drawImage(e.img,-w/2,-h,w,h); g.restore();};
     wm('menuC',9.4,0,2.05); wm('menuB',13.2,0,2.05); wm('menuS',14.9,0,2.05); }

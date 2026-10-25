@@ -1,20 +1,20 @@
 /* =====================================================================
-   26_stations_code.js — Meow Burger kitchen stations drawn in true iso geometry (same style as the PICK UP counter
-   and the storage rack): wooden base with a cream top, a steel back unit against the wall, posts + striped awning,
-   and a sign board carrying the station's icon. Every station sits flush on its footprint and against its wall.
+   26_stations_code.js — Meow Sakura kitchen stalls (yatai) drawn in true iso geometry (same style as the PICK UP counter
+   and the storage rack): wooden base with a cream top and a pink wave band, a steel back unit against the wall,
+   wooden posts with paper lanterns, a pink plank roof with noren curtains, and a sign board carrying the station's icon. Every station sits flush on its footprint and against its wall.
    wall 'L' = left wall (x=0), front faces +x.   wall 'B' = back wall (y=0), front faces +y.
    Local axes: u runs along the wall, v runs from the wall into the kitchen.
    ===================================================================== */
 const STC={wood:'#b56f3d',woodD:'#9a5a30',woodT:'#c98048',top:'#fbe5bd',topD:'#e9c793',topR:'#f2d3a2',
   steel:'#c3c7ce',steelD:'#8a8f98',steelM:'#a3a8b0',dark:'#3a3a40',darkD:'#26262b'};
 const ST_THEME={
-  oven:   {sign:'#e2463f',signD:'#b8322e',aw:['#e2463f','#fff6ea'],band:'#ffc928',text:'CHICKEN',icon:'leg',cook:'fryer'},
-  prep:   {sign:'#f08a2c',signD:'#c96a18',aw:['#f08a2c','#fff6ea'],band:'#f08a2c',text:'BURGER',icon:'burger',cook:'grill'},
-  special:{sign:'#7a4ad8',signD:'#5a32a8',aw:['#7a4ad8','#fff6ea'],band:'#f4c04e',text:'DELUXE',icon:'burger',crown:true,cook:'grill'},
-  seafood:{sign:'#e2463f',signD:'#b8322e',aw:['#e2463f','#fff6ea'],band:'#f08a2c',text:'CK BURGER',icon:'ckburger',cook:'grill'},
-  veggie: {sign:'#4fb341',signD:'#3a8a30',aw:['#4fb341','#fff6ea'],band:'#7cc05a',text:'SALAD',icon:'salad',cook:'bins'},
-  dessert:{sign:'#f4c04e',signD:'#c99418',aw:['#e2463f','#fff6ea'],band:'#e2463f',text:'FRIES',icon:'fries',cook:'fryer2'},
-  drink:  {sign:'#e2463f',signD:'#b8322e',aw:null,band:'#e2463f',text:'SODA',icon:'cup',cook:'soda'},
+  oven:   {sign:'#e2463f',signD:'#b8322e',aw:[SAK.roof,SAK.roofB],noren:[SAK.noren,SAK.norenB],band:SAK.petal,text:'CHICKEN',icon:'leg',cook:'fryer'},
+  prep:   {sign:'#f08a2c',signD:'#c96a18',aw:[SAK.roof,SAK.roofB],noren:[SAK.noren,'#fde3e8'],band:SAK.petal,text:'BURGER',icon:'burger',cook:'grill'},
+  special:{sign:'#7a4ad8',signD:'#5a32a8',aw:[SAK.roof,SAK.roofB],noren:['#f7c4d2',SAK.norenB],band:SAK.petal,text:'DELUXE',icon:'burger',crown:true,cook:'grill'},
+  seafood:{sign:'#e2463f',signD:'#b8322e',aw:[SAK.roof,SAK.roofB],noren:[SAK.noren,SAK.norenB],band:SAK.petal,text:'CK BURGER',icon:'ckburger',cook:'grill'},
+  veggie: {sign:'#4fb341',signD:'#3a8a30',aw:['#bcd39a','#adc78a'],noren:['#cfe3b0','#e8f1d6'],band:'#bcd39a',wave:'#7fae5a',text:'SALAD',icon:'salad',cook:'bins'},
+  dessert:{sign:'#f4c04e',signD:'#c99418',aw:[SAK.roof,SAK.roofB],noren:['#d8e6f4','#f2f6fb'],band:SAK.petal,wave:'#6f95c8',text:'FRIES',icon:'fries',cook:'fryer2'},
+  drink:  {sign:'#e2463f',signD:'#b8322e',aw:null,band:SAK.petal,text:'SODA',icon:'cup',cook:'soda'},
 };
 function stWall(st){ return st.y<.05&&st.x>.05?'B':'L'; }
 /* local frame of a station: u along the wall, v away from it */
@@ -51,7 +51,8 @@ function drawCodeStation(st){
   if(!soda) for(let i=1;i<3;i++) f.box(.06,.4,.3+i*.45,L-.12,.02,.03,null,STC.steelD,null);
   /* counter */
   f.box(0,.4,0,L,Dp-.4,H,STC.top,STC.wood,STC.woodD);
-  f.face(Dp,H-.18,g=>{ /* coloured band on the counter front */ const u0=0; g.fillStyle=th.band; g.fillRect(u0+.04,.02,L-.08,.13); g.lineWidth=.03; g.strokeStyle=INK; g.strokeRect(u0+.04,.02,L-.08,.13); });
+  f.face(Dp,H-.18,g=>{ /* coloured band on the counter front */ const u0=0; g.fillStyle=th.band; g.fillRect(u0+.04,.02,L-.08,.13); g.lineWidth=.03; g.strokeStyle=INK; g.strokeRect(u0+.04,.02,L-.08,.13);
+    g.save(); g.beginPath(); g.rect(u0+.04,.02,L-.08,.13); g.clip(); g.strokeStyle=th.wave||SAK.wave; g.lineWidth=.022; g.beginPath(); for(let x=u0+.04;x<L;x+=.12){ g.moveTo(x,.13); g.arc(x+.06,.13,.06,Math.PI,0); } g.stroke(); g.restore(); });
   /* cooking surface on the back half of the top */
   const cook=(u,v,lu,lv)=>{ const [x,y]=f.W(u,v); return [x,y]; };
   if(th.cook==='grill'){ f.box(.12,.48,H,L-.24,.5,.06,STC.dark,STC.darkD,STC.darkD);
@@ -72,13 +73,14 @@ function drawCodeStation(st){
   /* posts + awning + sign (not on the soda machine) */
   if(!soda){ const hp=2.05;
     for(const u of [.02,L-.1]) f.box(u,Dp-.12,H,.08,.08,hp-H,STC.woodT,STC.wood,STC.woodD);
-    /* awning: striped slope from the back unit to the front posts */
-    const n=Math.max(4,Math.round(L/.3)), seg=L/n;
+    /* roof: pink planks sloping from the back unit to the front posts, a wooden fascia, noren curtains, paper lanterns */
+    const n=Math.max(4,Math.round(L/.3)), seg=L/n, p=(u,v,z)=>{ const [x,y]=f.W(u,v); return P(x,y,z); };
     for(let i=0;i<n;i++){ const c=th.aw[i%2], u0=i*seg, u1=u0+seg;
-      const p=(u,v,z)=>{ const [x,y]=f.W(u,v); return P(x,y,z); };
-      poly(MD,[p(u0,.4,hp+.35),p(u1,.4,hp+.35),p(u1,Dp+.05,hp),p(u0,Dp+.05,hp)],c,INK,MD.OL*.7);
-      const [ax,ay]=p((u0+u1)/2,Dp+.05,hp), [bx,by]=p(u0,Dp+.05,hp), [cx2,cy2]=p(u1,Dp+.05,hp);
-      ctx.beginPath(); ctx.moveTo(bx,by); ctx.quadraticCurveTo(ax,ay+TW*.2,cx2,cy2); ctx.closePath(); ctx.fillStyle=c; ctx.fill(); ctx.strokeStyle=INK; ctx.lineWidth=MD.OL*.7; ctx.stroke(); }
+      poly(MD,[p(u0,.4,hp+.35),p(u1,.4,hp+.35),p(u1,Dp+.12,hp),p(u0,Dp+.12,hp)],c,SAK.roofLn,MD.OL*.45); }
+    poly(MD,[p(0,.4,hp+.35),p(L,.4,hp+.35),p(L,Dp+.12,hp),p(0,Dp+.12,hp)],null,INK,MD.OL*.8);
+    f.face(Dp+.12,hp,g=>{ g.fillStyle=STC.woodT; g.fillRect(0,0,L,.1); g.lineWidth=.03; g.strokeStyle=INK; g.strokeRect(0,0,L,.1);
+      drawNoren(g,.1,L-.2,.1,.5,th.noren[0],th.noren[1],th.wave||SAK.wave); });
+    for(const u of [.06,L-.06]){ const [lx,ly]=p(u,Dp+.12,hp-.02); paperLantern(ctx,lx,ly,TW*.42); }
     /* sign board standing on top of the back unit */
     f.face(.18,hp+1.45,g=>{ const w=L*.96, x0=(L-w)/2, h=1.08; g.lineWidth=.045; g.strokeStyle=INK;
       rr(g,x0,0,w,h,.14); g.fillStyle=th.sign; g.fill(); g.stroke();
@@ -89,9 +91,10 @@ function drawCodeStation(st){
       if(th.crown){ g.fillStyle='#f4c04e'; g.beginPath(); const cx=x0+w*.24, cy=.02; g.moveTo(cx-.12,cy); g.lineTo(cx-.12,cy-.14); g.lineTo(cx-.05,cy-.06); g.lineTo(cx,cy-.17); g.lineTo(cx+.05,cy-.06); g.lineTo(cx+.12,cy-.14); g.lineTo(cx+.12,cy); g.closePath(); g.fill(); g.lineWidth=.03; g.stroke(); } }); }
 }
 /* code-drawn balloon arch standing on the floor between two points (semicircle of clustered balloons) */
-function addBalloonArch(add,x0,y0,x1,y1,hgt,label,ribbon){ const cols=['#e2463f','#f4c04e','#ffffff','#5cb4f0','#f45d7a'], N=18, mx=(x0+x1)/2, my=(y0+y1)/2;
+function addBalloonArch(add,x0,y0,x1,y1,hgt,label,ribbon){ const cols=[SAK.petal,'#fff4f7','#9fd0f0','#ffd98a','#f4a3bb'], N=18, mx=(x0+x1)/2, my=(y0+y1)/2;
   for(let i=0;i<=N;i++){ const a=Math.PI*(1-i/N), x=mx+Math.cos(a)*(x1-x0)/2, y=my+Math.cos(a)*(y1-y0)/2, z=Math.sin(a)*hgt;
-    add(x+y+.02,()=>{ const [sx,sy]=P(x,y,z); for(let j=0;j<3;j++) ell(MD,sx+(j-1)*TW*.07,sy-(j%2)*TW*.06,TW*.11,TW*.11,cols[(i+j)%cols.length],INK,MD.OL*.6); }); }
+    add(x+y+.02,()=>{ const [sx,sy]=P(x,y,z); for(let j=0;j<3;j++) ell(MD,sx+(j-1)*TW*.07,sy-(j%2)*TW*.06,TW*.11,TW*.11,cols[(i+j)%cols.length],INK,MD.OL*.6);
+      if(i%2===0) sakuraFlower(ctx,sx,sy-TW*.1,TW*.1,SAK.petal,SAK.core,SAK.petalLn,MD.OL*.4); }); }
   for(const [x,y] of [[x0,y0],[x1,y1]]) add(x+y,()=>{ const [sx,sy]=P(x,y,0); ell(MD,sx,sy,TW*.16,TW*.08,'#8a8f98',INK,MD.OL*.6); });
   if(ribbon) add(mx+my+.03,()=>{ const a=P(x0,y0,.6), b=P(x1,y1,.6); ctx.strokeStyle=INK; ctx.lineWidth=MD.OL*3; ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke(); ctx.strokeStyle='#e2463f'; ctx.lineWidth=MD.OL*1.8; ctx.stroke();
     const [cx,cy]=P(mx,my,.6); ell(MD,cx-TW*.08,cy,TW*.08,TW*.06,'#e2463f',INK,MD.OL*.6); ell(MD,cx+TW*.08,cy,TW*.08,TW*.06,'#e2463f',INK,MD.OL*.6); });

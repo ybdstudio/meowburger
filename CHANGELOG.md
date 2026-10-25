@@ -1,3 +1,17 @@
+# Meow Sakura — changelog
+
+Meow Sakura continues from Meow Burger v1.6.4 (history below).
+
+## v1.0.0 — Meow Sakura
+- New name and restaurant: a Japanese sakura diner. All cats (player, staff, customers, VIP) are unchanged.
+- Walls: wooden planks with paper lanterns and sakura sprigs along the cap; right baseboard in wood. Trees are sakura trees; petals on the lawn.
+- Kitchen stalls as yatai: pink plank roofs (green for salad), noren curtains, paper lanterns on the posts, pink wave band on the counter.
+- PICK UP sign with blossoms; VIP rug and table in sakura pink; pennants (white with red sun, pink) at the Grand Opening; pastel balloons and a blossom balloon arch.
+- Sprites from the JP kit: register, carry tray, trash bin, menu stand, boxes, plant, wall menus, chicken box, fries, drink, burgers, salad, burger box, ingredients box, used tray.
+- TikTok UI art from the JP kit: loading screen (logo relettered "Meow Sakura"), home / revisit / share popups (texts read "Meow Sakura"), side buttons, paw thumb, icons. Native popup aspect ratios updated.
+- Save key `meowsakura.v3`; game, share and project names read Meow Sakura.
+- Tests: qa_native 44/44, hs-check 0 fail (placeholder warnings only), full bot run 40:59 with 0 customers lost.
+
 # Meow Burger — changelog
 
 Engine history before Meow Burger (Meow Pizza v4.x) is in `docs/pizza-legacy/CHANGELOG_pizza.md`.

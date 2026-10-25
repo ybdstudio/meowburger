@@ -258,7 +258,7 @@ const UI={
   testTool(x){ const m=PF.mock; if(x==='days'){S.mx.rvDay='';S.mx.shDay='';PF._mockRevisit=false;UI._rvCan=false;save();UI.toast('Daily gifts reset')}
     if(x==='home'){S.mx.home=0;S.mx.homeAsked=0;save();UI.toast('Add-to-Home reset')} if(x==='fail'){m.adFailNext=true;UI.toast('Next ad will fail')} if(x==='quit'){m.adQuitNext=true;UI.toast('Next ad will be closed early')} if(x==='money'){S.money+=500;save()} },
   m_milestone(w){ const r=[{h:84,draw(x,y,ww){ drawImg(icon('star'),x+ww/2-38,y,76,76); }}, {h:30,draw(x,y,ww){ box(x,y,ww,30,12,C.red,C.ink,2.5,0); txt('GRAND OPENING COMPLETE',x+ww/2,y+16,15,'#fff','center',700,C.ink,3); }},
-      UI.B.note('Meow Burger is now a Burger Palace!',w),
+      UI.B.note('Meow Sakura is now a Sakura Palace!',w),
       {h:52,draw(x,y,ww){ const s=[[fmtTime(S.playTime),'play time'],[String(S.stats.served),'customers served'],[fmtNum(S.stats.collected),'coins collected']], bw=(ww-12)/3; s.forEach((v,i)=>{ const bx=x+i*(bw+6); box(bx,y,bw,52,10,'#fff',C.ink,2,0); txt(v[0],bx+bw/2,y+19,18,C.ink,'center'); txt(v[1],bx+bw/2,y+39,10,C.brown2,'center',600); }); }},
       UI.B.note('Keep playing: every upgrade and optional table stays available.',w)]; r.title=''; return r; },
   /* --- popups (mockup style) --- */
@@ -273,21 +273,21 @@ const UI={
         txt(amt,x+ww/2,y+ww*ratio*.78,38,'#fff','center',700,'#6b3b22',7); }}; },
       note(s,w){ return {h:wrap(s,w,13).length*17, draw(x,y,ww){ para(s,x,y,ww,13,'#8a4a2a',700,1.25,'center'); }}; },
   },
-  m_home(w){ const P=UI.P, amt=CFG.gifts.home, paid=UI.homeDone(); const r=[P.sub('Add Meow Burger to your phone screen for quick access!',w), P.art('pop_home_art.jpg',w,217/640)];
+  m_home(w){ const P=UI.P, amt=CFG.gifts.home, paid=UI.homeDone(); const r=[P.sub('Add Meow Sakura to your phone screen for quick access!',w), P.art('pop_home_art.jpg',w,208/640)];
     if(!paid) r.push(P.pill('+'+amt,'first time bonus'));
     r.push(P.yellow(UI._busy?'…':'Add Now',async()=>{ if(UI._busy) return; UI._busy=true; const res=await PF.addHome(); UI._busy=false;
       if(!res.ok){ UI.toast('Not added — you can try again any time'); return; }
       const can=await PF.shortcutReward(); UI.close();
-      if(can&&!UI.homeDone()){ S.mx.home=1; UI.giftPay(amt,'Home screen bonus'); } else { S.mx.home=S.mx.home||'added'; save(); UI.toast('Meow Burger is on your phone screen!'); } },{disabled:!!UI._busy,id:'homeGo'}));
+      if(can&&!UI.homeDone()){ S.mx.home=1; UI.giftPay(amt,'Home screen bonus'); } else { S.mx.home=S.mx.home||'added'; save(); UI.toast('Meow Sakura is on your phone screen!'); } },{disabled:!!UI._busy,id:'homeGo'}));
     return r; },
   m_revisit(w){ const P=UI.P, amt=CFG.gifts.revisit, claimed=UI.revisitClaimed(), can=UI._rvCan&&!claimed;
     return [P.step(1,'Tap the button below.',w), P.yellow('Go',async()=>{ const r=await PF.startRevisit(); if(!r.ok){UI.toast('Could not open your profile');return} if(!PF.isMinis){ UI.toast('Welcome back from your Profile!'); UI.refreshRevisit(false); } },{disabled:claimed,id:'rvGo'}),
-      P.step(2,'Come back to Meow Burger from your TikTok profile.',w), P.art('pop_revisit_profile.jpg',w,362/640), P.step(3,'Claim rewards.',w), P.coins('pop_revisit_coins.jpg','+'+amt,w,283/762),
+      P.step(2,'Come back to Meow Sakura from your TikTok profile.',w), P.art('pop_revisit_profile.jpg',w,352/640), P.step(3,'Claim rewards.',w), P.coins('pop_revisit_coins.jpg','+'+amt,w,224/640),
       P.note(claimed?'Gift claimed — come back tomorrow for another gift.':'Come back tomorrow for another gift.',w),
-      P.yellow(claimed?'Claimed ✓':'Claim',async()=>{ if(UI.revisitClaimed()) return; const ok=await PF.revisitReward(); if(!ok){ UI._rvCan=false; UI.toast('Open Meow Burger from Profile › Recently played first'); return; }
+      P.yellow(claimed?'Claimed ✓':'Claim',async()=>{ if(UI.revisitClaimed()) return; const ok=await PF.revisitReward(); if(!ok){ UI._rvCan=false; UI.toast('Open Meow Sakura from Profile › Recently played first'); return; }
         S.mx.rvDay=dayKey(); PF._mockRevisit=false; UI.close(); UI.giftPay(amt,'Revisit gift'); },{disabled:!can,id:'rvClaim'})]; },
   m_share(w){ const P=UI.P, amt=CFG.gifts.share, claimed=UI.shareClaimed();
-    return [P.sub('Share Meow Burger with friends and get a reward!',w), P.art('pop_share_art.jpg',w,451/640), P.pill(claimed?'Claimed today':'+'+amt,claimed?'new gift tomorrow':null),
+    return [P.sub('Share Meow Sakura with friends and get a reward!',w), P.art('pop_share_art.jpg',w,448/640), P.pill(claimed?'Claimed today':'+'+amt,claimed?'new gift tomorrow':null),
       P.yellow(claimed?'Share again':'Share Now',async()=>{ if(UI._busy) return; UI._busy=true; const r=await PF.share(); UI._busy=false; if(!r.ok){ UI.toast('Share cancelled'); return; }
         UI.close(); if(!UI.shareClaimed()){ S.mx.shDay=dayKey(); UI.giftPay(amt,'Share gift'); } else UI.toast('Thanks for sharing!'); },{icon:'share',id:'shGo'})]; },
   /* --- mock ad / mock TikTok sheet --- */

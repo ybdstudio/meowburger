@@ -91,7 +91,7 @@ Object.assign(UI,{
     $('mxClose').onclick=close; $('modalBg').onclick=e=>{if(e.target.id==='modalBg')close()}; },
   /* ---- Add to Phone Screen ---- */
   openHome(){ const amt=CFG.gifts.home, paid=UI.homeDone();
-    UI.popup(MX_ART.btn_home,'Launch Reward',`<p class="mx-sub">Add Meow Burger to your phone screen for quick access!</p>
+    UI.popup(MX_ART.btn_home,'Launch Reward',`<p class="mx-sub">Add Meow Sakura to your phone screen for quick access!</p>
       <img class="mx-art" alt="" src="${MX_ART.pop_home_art}">
       ${PF.isMinis?'':`<img class="mx-art mx-steps" alt="1. Tap the share button. 2. Select Add to Home Screen." src="${MX_ART.pop_home_steps}">`}
       ${paid?'':`<div class="mx-pill">${UI_ICON.coin}<b>+${amt}</b><small>first time bonus</small></div>`}
@@ -99,14 +99,14 @@ Object.assign(UI,{
     $('mxGo').onclick=async()=>{ const b=$('mxGo'); b.disabled=true; const r=await PF.addHome();
       if(!r.ok){ b.disabled=false; UI.toast('Not added — you can try again any time'); return; }
       const can=await PF.shortcutReward(); UI.close();
-      if(can&&!UI.homeDone()){ S.mx.home=1; UI.grant(amt,'Home screen bonus'); } else { S.mx.home=S.mx.home||'added'; save(); UI.toast('Meow Burger is on your phone screen!'); } }; },
+      if(can&&!UI.homeDone()){ S.mx.home=1; UI.grant(amt,'Home screen bonus'); } else { S.mx.home=S.mx.home||'added'; save(); UI.toast('Meow Sakura is on your phone screen!'); } }; },
   /* ---- Revisit Gift ---- */
   openRevisit(){ const amt=CFG.gifts.revisit, claimed=UI.revisitClaimed(), can=UI._rvCan&&!claimed;
     UI._rvPopup=true;
     UI.popup(MX_ART.btn_revisit,'Entry Reward',`<ol class="mx-steps-list">
       <li><span class="mx-n">1</span><p>Tap the button below.</p></li></ol>
       <button class="mx-btn" id="mxGo" ${claimed?'disabled':''}>Go</button>
-      <ol class="mx-steps-list" start="2"><li><span class="mx-n">2</span><p>Come back to Meow Burger from your TikTok profile.</p></li></ol>
+      <ol class="mx-steps-list" start="2"><li><span class="mx-n">2</span><p>Come back to Meow Sakura from your TikTok profile.</p></li></ol>
       <img class="mx-art" alt="Find us under Profile, Recently played" src="${MX_ART.pop_revisit_profile}">
       <ol class="mx-steps-list" start="3"><li><span class="mx-n">3</span><p>Claim rewards.</p></li></ol>
       <div class="mx-coins"><img alt="" src="${MX_ART.pop_revisit_coins}"><b>+${amt}</b></div>
@@ -115,11 +115,11 @@ Object.assign(UI,{
     $('mxGo').onclick=async()=>{ const r=await PF.startRevisit(); if(!r.ok){UI.toast('Could not open your profile');return}
       if(!PF.isMinis){ UI.toast('Welcome back from your Profile!'); UI.refreshRevisit(false); } };
     $('mxClaim').onclick=async()=>{ if(UI.revisitClaimed()) return; $('mxClaim').disabled=true; const ok=await PF.revisitReward();
-      if(!ok){ UI.toast('Open Meow Burger from Profile › Recently played first'); UI.openRevisit(); return; }
+      if(!ok){ UI.toast('Open Meow Sakura from Profile › Recently played first'); UI.openRevisit(); return; }
       S.mx.rvDay=dayKey(); PF._mockRevisit=false; UI._rvPopup=false; UI.close(); UI.grant(amt,'Revisit gift'); }; },
   /* ---- Share Gift ---- */
   openShare(){ const amt=CFG.gifts.share, claimed=UI.shareClaimed();
-    UI.popup(MX_ART.btn_share,'Share Game',`<p class="mx-sub">Share Meow Burger with friends and get a reward!</p>
+    UI.popup(MX_ART.btn_share,'Share Game',`<p class="mx-sub">Share Meow Sakura with friends and get a reward!</p>
       <img class="mx-art" alt="" src="${MX_ART.pop_share_art}">
       <div class="mx-pill">${UI_ICON.coin}<b>${claimed?'Claimed today':'+'+amt}</b>${claimed?'<small>new gift tomorrow</small>':''}</div>
       <button class="mx-btn" id="mxGo"><i>${MX_ICON.share}</i>${claimed?'Share again':'Share Now'}</button>`);

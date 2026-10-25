@@ -76,7 +76,7 @@ async function preloadAssets(onProgress){
   if(required.length) throw new Error('Assets failed to build: '+required.join(', '));
   onProgress&&onProgress(1);
 }
-/* Meow Burger: kit food art -> world item (it_*), order-bubble icon (ic_*) and raw state (it_raw_*), baked at 3x */
+/* Meow Sakura: kit food art -> world item (it_*), order-bubble icon (ic_*) and raw state (it_raw_*), baked at 3x */
 const FOOD_FIT={pizza:1.0,drink:.8,pepperoni:.72,dessert:.62,veggie:.82,seafood:.72,special:.76,box:.72,ing:.62,trash:.78,
   raw_pizza:.8,raw_pepperoni:.7,raw_veggie:.7,raw_seafood:.66,raw_special:.7};
 function bakeFoodArt(k,im){ const S=3, W=ITEM_SPR.w*S, H=ITEM_SPR.h*S, AX=ITEM_SPR.ax*S, AY=ITEM_SPR.ay*S;

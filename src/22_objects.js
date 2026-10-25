@@ -120,7 +120,7 @@ const OBJ_PAINT={
     box(D,1.3,.2,0,.5,1.2,.5,'#eab27a','#b5703c','#c98048');box(D,1.33,.25,.5,.44,1.1,.03,'#f8d77c',COL.goldDk,COL.gold);
   },hot:{top:[1.55,.8,.53],glow:[1.2,.8,.68]}},
   /* --- dining --- */
-  table:{fp:[1.5,1],h:.9,paint:D=>{   /* Meow Burger (P1): cream square top on a black pedestal */
+  table:{fp:[1.5,1],h:.9,paint:D=>{   /* Meow Sakura (P1): cream square top on a black pedestal */
     { const [bx,by]=D.P(.75,.5,0); ell(D,bx,by,D.T*.3,D.T*.15,'#2f2f33',INK,D.OL*.8); }
     box(D,.66,.42,0,.18,.16,.48,'#3a3a40','#232327','#2c2c31');
     box(D,-.05,-.05,.46,1.6,1.1,.09,'#f7e2bb','#d4ad78','#e3c08e');

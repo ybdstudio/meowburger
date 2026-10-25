@@ -68,7 +68,7 @@ const PF=(()=>{
        each returns a Promise<{ok:boolean, reward?:boolean, err?:string}> */
     canShortcut(){ return sdk()?has('addShortcut'):true; },
     addHome(){ const T=sdk();
-      if(!T) return mockStep('Add to Home Screen','The phone asks “Add Meow Burger to Home Screen?”',true);
+      if(!T) return mockStep('Add to Home Screen','The phone asks “Add Meow Sakura to Home Screen?”',true);
       return new Promise(res=>{ try{ T.addShortcut({success:()=>res({ok:true}),fail:e=>res({ok:false,err:(e&&(e.error_msg||e.errMsg))||'cancelled'})}); }catch(e){res({ok:false,err:e.message})} }); },
     shortcutReward(){ const T=sdk(); if(!T) return Promise.resolve(true);
       if(!has('getShortcutMissionReward')) return Promise.resolve(false);
@@ -84,7 +84,7 @@ const PF=(()=>{
       return new Promise(res=>{ try{ fn.call(T,{success:r=>res(!!(r&&r.canReceiveReward)),fail:()=>res(false)}); }catch(_){res(false)} }); },
     share(){ const T=sdk();
       if(T&&T.shareAppMessage) return new Promise(res=>{ try{ T.shareAppMessage({query:'from=share',success:()=>res({ok:true}),fail:e=>res({ok:false,err:(e&&e.errMsg)||'cancelled'})}); }catch(e){res({ok:false,err:e.message})} });
-      return mockStep('Share Meow Burger','In TikTok this opens the friend picker. Pick “Sent” to simulate a share.',true,'Sent','Cancel'); },
+      return mockStep('Share Meow Sakura','In TikTok this opens the friend picker. Pick “Sent” to simulate a share.',true,'Sent','Cancel'); },
   };
   /* mock confirmation sheet so the flows can be tested outside TikTok */
   function mockStep(title,body,okDefault,okTxt='Done',noTxt='Cancel'){
@@ -125,7 +125,7 @@ const Ads={
   /* cb gets {ended:true} (grant) | {ended:false} (closed early) | {error} */
   _show(key,cb){ if(Ads.busy) return cb({error:'busy'}); const pl=AD_PLACEMENTS[key], unit=key+':'+Date.now();
     Ads.busy=true; PF.emit('pause','ad'); const p={unit,cb,timer:0}; Ads.pending=p;
-    const A=Ads.adapter||window.MeowBurgerAds||null;
+    const A=Ads.adapter||window.MeowSakuraAds||window.MeowBurgerAds||null;
     if(!A) return Ads._mockShow(key,unit);
     p.timer=setTimeout(()=>Ads._done(unit,{error:'timeout'}),90000);
     try{ const pr=pl.type==='rewarded'?A.rewarded(pl.label):A.interstitial(pl.label);

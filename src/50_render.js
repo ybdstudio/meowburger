@@ -57,7 +57,7 @@ function drawStaff(e,name,anim){
 /* ---- customers / VIP / cleaner / manager: approved art (8-direction idle; drawn walk cycles where the sheet has them,
         otherwise the body stays still and only the leg strip steps) ---- */
 const SHEET_H={chef:1.06,cashier:1.0,waiter:1.0,cleaner:1.0,cat01:.95,cat02:.95,cat03:.95,cat04:.95,vip01:1.0,vip02:1.0,manager:1.0};
-/* Meow Burger sheets: the player has a full 8-direction walk + tray-carry set; the other roles have one drawn walk
+/* Meow Sakura sheets: the player has a full 8-direction walk + tray-carry set; the other roles have one drawn walk
    (screen-right, mirrored for screen-left) and step their legs on the 8-direction idle art for the other directions.
    A few side-profile idles lost face fill when cut, so those directions reuse the clean neighbour view. */
 const SIDE_WALK={walk:{90:[270,1]}};
@@ -148,7 +148,9 @@ function render(){
   ctx.drawImage(floorCv,ox+floorInfo.ox,oy+floorInfo.oy,floorCv.width/floorInfo.dpr,floorCv.height/floorInfo.dpr);
   /* flat overlays: buy spots + pads + helper rings */
   for(const sp of SPOTS) if(spotVisible(sp)) drawSpotFloor(sp);
-  for(const t of tables) if(t.kind==='vip'){ const [vx,vy]=P(t.x+t.w/2,t.y+t.d/2); ell(MD,vx,vy,TW*1.35,TW*.67,'#d8343a',INK,MD.OL*.8); ell(MD,vx,vy,TW*1.2,TW*.6,null,'#f4c04e',MD.OL*1.4); }
+  for(const t of tables) if(t.kind==='vip'){ const [vx,vy]=P(t.x+t.w/2,t.y+t.d/2); ell(MD,vx,vy,TW*1.35,TW*.67,SAK.petal,INK,MD.OL*.8); ell(MD,vx,vy,TW*1.2,TW*.6,null,'#fff4f7',MD.OL*1.4);   /* pink sakura rug */
+    const r=seeded(77); ctx.save(); ctx.beginPath(); ctx.ellipse(vx,vy,TW*1.18,TW*.58,0,0,7); ctx.clip();
+    for(let i=0;i<16;i++){ const a=r()*6.3, d=Math.sqrt(r()); sakuraFlower(ctx,vx+Math.cos(a)*d*TW*1.05,vy+Math.sin(a)*d*TW*.5,TW*(.09+r()*.05),i%2?'#fff4f7':SAK.petalLt,SAK.core,SAK.petalDk,MD.OL*.35); } ctx.restore(); }
   for(const pd of PADS) if(pd.vis()) drawPad(pd);
   if(S.bought.register&&!S.bought.cashier) ring(PT.cashier,'rgba(255,255,255,.25)');
   if(S.bought.register) for(let i=0;i<CFG.queueMax;i++){const [qx,qy]=P(...slotPos(i));ctx.save();ctx.globalAlpha=.35;ctx.translate(qx,qy);ctx.scale(1,.5);pawPrint(MD,0,0,TW*.13,'#fff');ctx.restore()}
@@ -235,12 +237,12 @@ function tableTop(cx,cy,hd,vip){ const D=MD, hw=TB.hw;
   box(D,cx-.08,cy-.08,0,.16,.16,TB.z,TBC.leg,TBC.legD,TBC.leg);
   if(!vip){ box(D,cx-hw,cy-hd,TB.z,hw*2,hd*2,.08,TBC.top,TBC.topL,TBC.topR); return; }
   const o=.06, z1=TB.z+.08, z0=TB.z-.2;
-  box(D,cx-hw-o,cy-hd-o,z0,hw*2+o*2,hd*2+o*2,z1-z0,'#d8343a','#a8232b','#c12a31');
-  poly(D,[P(cx-hw-o,cy+hd+o,z0),P(cx+hw+o,cy+hd+o,z0),P(cx+hw+o,cy+hd+o,z0+.05),P(cx-hw-o,cy+hd+o,z0+.05)],'#f4c04e',INK,D.OL*.5);
-  poly(D,[P(cx+hw+o,cy-hd-o,z0),P(cx+hw+o,cy+hd+o,z0),P(cx+hw+o,cy+hd+o,z0+.05),P(cx+hw+o,cy-hd-o,z0+.05)],'#f4c04e',INK,D.OL*.5);
+  box(D,cx-hw-o,cy-hd-o,z0,hw*2+o*2,hd*2+o*2,z1-z0,'#f7c2cf','#e08ba2','#eba3b6');   /* sakura-pink VIP table */
+  poly(D,[P(cx-hw-o,cy+hd+o,z0),P(cx+hw+o,cy+hd+o,z0),P(cx+hw+o,cy+hd+o,z0+.05),P(cx-hw-o,cy+hd+o,z0+.05)],'#fff4f7',INK,D.OL*.5);
+  poly(D,[P(cx+hw+o,cy-hd-o,z0),P(cx+hw+o,cy+hd+o,z0),P(cx+hw+o,cy+hd+o,z0+.05),P(cx+hw+o,cy-hd-o,z0+.05)],'#fff4f7',INK,D.OL*.5);
   poly(D,[P(cx-hw*.55,cy-hd-o,z1+.002),P(cx+hw*.55,cy-hd-o,z1+.002),P(cx+hw*.55,cy+hd+o,z1+.002),P(cx-hw*.55,cy+hd+o,z1+.002)],'#fff2d0',null);
   const [vx,vy]=P(cx-hw*.55,cy-hd*.55,z1); cyl(D,vx,vy,TW*.05,TW*.025,TW*.13,'#bfe3f0',null,INK);
-  ell(D,vx,vy-TW*.18,TW*.055,TW*.045,'#e2463f',INK,D.OL*.6); ell(D,vx+TW*.03,vy-TW*.14,TW*.03,TW*.02,'#5aa63c',null);
+  sakuraFlower(ctx,vx,vy-TW*.18,TW*.07,SAK.petal,SAK.core,SAK.petalLn,D.OL*.5); ell(D,vx+TW*.04,vy-TW*.13,TW*.03,TW*.018,'#5aa63c',null);
   const [kx,ky]=P(cx+hw*.55,cy-hd*.55,z1); ctx.fillStyle='#fff6e0'; ctx.fillRect(kx-TW*.022,ky-TW*.16,TW*.044,TW*.16); ctx.strokeStyle=INK; ctx.lineWidth=D.OL*.6; ctx.strokeRect(kx-TW*.022,ky-TW*.16,TW*.044,TW*.16);
   const f=.7+.3*Math.sin(now*9+cx); ell(D,kx,ky-TW*.2,TW*.025*f,TW*.045*f,'#ffcf4a','#ff8a2a',D.OL*.5); }
 function drawSeated(c,sx0,sy0,side){ const set=MORE_SPRITES[c.skin]; if(!set) return; const t=(c.t||now)+(c.seed||0);
@@ -277,13 +279,13 @@ function stationArt(st){ if(st.type==='pantry'){ const f=st.stock/Math.max(1,stC
 function balloon(x,y,z,col,s=1){ const [sx,sy]=P(x,y,z), t=now+x*1.3; const bx=sx+Math.sin(t*1.5)*TW*.03;
   ctx.strokeStyle='#8a6a58'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(bx,sy-TW*.05); ctx.quadraticCurveTo(bx+TW*.04,sy+TW*.35*s,sx,sy+TW*.7*s); ctx.stroke();
   ell(MD,bx,sy-TW*.2*s,TW*.15*s,TW*.18*s,col,INK,MD.OL*.7); ell(MD,bx-TW*.05*s,sy-TW*.27*s,TW*.035*s,TW*.05*s,'rgba(255,255,255,.7)',null); }
-function drawGrandDecor(add){ const cols=['#e2463f','#f4c04e','#ffffff','#5cb4f0','#f45d7a'];
+function drawGrandDecor(add){ const cols=[SAK.petal,'#fff4f7','#f4a3bb','#9fd0f0','#ffd98a'];
   addBalloonArch(add,18.7,LANE.y0-.1,18.7,LANE.y1+.1,2.4,'GRAND OPENING',false);
   /* balloon clusters at the doors and corners */
   for(const [x,y] of [[18.4,7.2],[18.4,9.8],[7.4,.5],[18.2,.5],[7.4,23.8],[18.2,23.8]]) add(x+y,()=>{ balloon(x,y,1.2,cols[0]); balloon(x+.15,y-.1,1.45,cols[1]); balloon(x-.1,y+.15,1.3,cols[3]); });
-  /* bunting along the top of both walls */
+  /* pennants (white with a red sun, pink) along the top of both walls */
   add(-1,()=>{ for(const [a,b,axis] of [[0,18.5,'x'],[0,19.6,'y']]) for(let u=a+.3;u<b;u+=.6){ const p0=axis==='x'?P(u,0,2.75):P(0,u,2.75), p1=axis==='x'?P(u+.3,0,2.45):P(0,u+.3,2.45), p2=axis==='x'?P(u+.6,0,2.75):P(0,u+.6,2.75);
-    poly(MD,[p0,p2,p1],cols[Math.round(u/.6)%cols.length],INK,MD.OL*.5); } });
+    pennant(MD,p0,p2,p1,Math.round(u/.6)); } });
 }
 function drawDesk(x,y,w,d){ const H=.62; box(MD,x,y,0,w,d,H,'#fbe5bd','#9a5a30','#b56f3d'); box(MD,x-.05,y-.05,H,w+.1,d+.1,.1,'#fbe5bd','#e9c793','#f2d3a2');
   const [sx,sy]=P(x+w*.4,y+d*.5,H+.1); drawItemAt('ing',sx+TW*.15,sy+TW*.02,.55); }
@@ -350,13 +352,14 @@ function drawCounterSeg(y0,len,first,last){ const c=COUNTER, H=CTRC.h, x0=c.x, x
   line(D,[P(x1,y0,.06),P(x1,y1,.06)],CTRC.seam,D.OL*.8);
   if(last) poly(D,[P(x0,y1,0),P(x1,y1,0),P(x1,y1,H-.08),P(x0,y1,H-.08)],CTRC.woodL,INK,D.OL);
   line(D,[P(x1,y0,0),P(x1,y1,0)],INK,D.OL); if(first) line(D,[P(x1,y0,0),P(x1,y0,H)],INK,D.OL);
-  /* red PICK UP sign on the customer face, clipped to this segment */
+  /* red PICK UP sign (with sakura blossoms) on the customer face, clipped to this segment */
   const [s0,s1]=CTR_SIGN(), a=Math.max(s0,y0), b=Math.min(s1,y1);
   if(b>a){ onFace(D,'x',x1,y1,H-.18,g=>{ g.save(); g.beginPath(); g.rect(0,0,len,.6); g.clip();
       const u0=y1-s1, u1=y1-s0; g.fillStyle=CTRC.sign; g.strokeStyle=INK; g.lineWidth=.035; rr(g,u0,.04,u1-u0,.44,.06); g.fill(); g.stroke();
       g.fillStyle='#fff6ea'; g.font='700 30px Fredoka, sans-serif'; g.textAlign='center'; g.textBaseline='middle';
       g.save(); g.translate((u0+u1)/2+.12,.27); g.scale(.0105,.0105); g.fillText('PICK UP',0,0);
       g.beginPath(); g.arc(-82,-2,13,0,7); g.fill(); g.beginPath(); g.moveTo(-94,-8); g.lineTo(-92,-22); g.lineTo(-84,-13); g.moveTo(-70,-8); g.lineTo(-72,-22); g.lineTo(-80,-13); g.fill(); g.restore();
+      sakuraFlower(g,u0+.06,.08,.1,SAK.petal,SAK.core,SAK.petalLn,.012); sakuraFlower(g,u0+.2,.02,.07,'#fff4f7',SAK.core,SAK.petalLn,.01); sakuraFlower(g,u1-.08,.46,.09,SAK.petal,SAK.core,SAK.petalLn,.012);
       g.restore(); }); }
   /* overhanging cream top slab */
   const o=.07, zt=H-.08, zb=H+.05;

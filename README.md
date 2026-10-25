@@ -1,19 +1,28 @@
-# Meow Burger
+# Meow Sakura
 
-Idle tycoon mini game for **TikTok Minis** (native canvas build) in the Meow series. It reuses the Meow Pizza v4.8 engine with Meow Burger data and art.
+Idle tycoon mini game for **TikTok Minis** (native canvas build) in the Meow series: the Meow Burger game (same cats, same menu, same economy) moved into a Japanese sakura restaurant. It runs on the Meow Pizza v4.8 engine.
 
-- Current version: **v1.6.4** (`VERSION` in `src/00_config.js`)
-- TikTok App ID / HS Game ID: `7699569778830231573`
+- Current version: **v1.0.0** (`VERSION` in `src/00_config.js`)
+- TikTok App ID / HS Game ID: not set yet. Meow Sakura is a new game, so it needs its own App ID, SDK key and ad units in `src/native/hs-config.json` (Meow Burger's were `7699569778830231573`).
+- Save key: `meowsakura.v3` (separate from Meow Burger saves).
 - Ads, missions, share and cloud save run through the HS TikTok SDK kit (`vendor/hs-tiktok-sdk-1.0.7`).
 
 ## Branches
 
 | Branch | What it holds |
 |---|---|
-| `main` | Source code, build scripts, tests, art pipeline tools, docs |
+| `meowsakura` | Meow Sakura source (sakura restaurant, same cats) |
+| `main` | Meow Burger source code, build scripts, tests, art pipeline tools, docs |
 | `release/tiktok-native-v1.6.4` | Built TikTok Minis upload package (`native/`, with `game.json` at its root) and `native.hs-dashboard.json` for the HS dashboard |
 | `web-build` | Web test build (`index.html`, one self-contained file for phone testing) and the H5 TikTok Minis web variant (`minis/`) |
 | `art-source` | Source art sheets the `tools/*.py` pipeline cuts sprites from (asset kit, P1 scene, player sheets, TikTok UI pack) |
+
+## Sakura theme
+- Characters are unchanged from Meow Burger (`src/15_staff_sprites.js`, `src/16_more_sprites.js`, `assets/characters/`).
+- `src/11_sakura.js`: code-drawn theme pieces (blossoms, paper lanterns, sprigs, pennants, noren curtains, petals).
+- Code-drawn restaurant: plank walls with lanterns and sakura sprigs (`30_world.js`), sakura trees (`24_env.js`), yatai stalls with pink roofs, noren and lanterns (`26_stations_code.js`), pink sakura VIP rug and table, pennants, pastel balloon arch (`50_render.js`).
+- `tools/sakura_art.py KIT_DIR`: swaps prop/food sprites and the TikTok UI art from the unzipped `meow-jp-full` kit, relettering "Meow Burger" to "Meow Sakura" on the loading logo and popups (font: `tools/fonts/Fredoka.ttf`, OFL).
+- `tests/shot.js`: screenshots of the web build for art review (`SAVE=state.json OUT=dir NOHUD=1 node tests/shot.js`; a late-game `state.json` comes from `SAVEOUT=state.json node tests/bot.js`).
 
 ## Layout
 - `src/00_config.js`: all game data (items, stations, spots, tasks, `CFG.ads`, `CFG.gifts`, `CFG.autoPlay`).
@@ -41,6 +50,7 @@ python3 src/build_native.py     # TikTok native: dist/native + dist/native.hs-da
 
 ```bash
 node tests/qa_native.js                                    # 44/44
+node tests/qa_minis.js                                     # 42/47 (5 legacy checks fail the same way on Meow Burger v1.6.4)
 node vendor/hs-tiktok-sdk-1.0.7/hs-check.mjs dist/native   # 0 fail (capital-letter label warnings are expected)
 HTML=dist/index.html node tests/bot.js                     # full playthrough, ~40 min
 ```

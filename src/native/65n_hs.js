@@ -4,9 +4,9 @@
    (or HS_DEFAULTS below when offline) decides what they give; every reward
    arrives in hsGive (onGive). Ads are shown by placement label.
    ===================================================================== */
-/* Meow Burger credentials live in meow-config.js next to game.js (fill in before uploading) */
+/* Meow Sakura credentials live in meow-config.js next to game.js (fill in before uploading) */
 const HS_CFG=(function(){ try{ const c=(typeof require==='function')?require('./meow-config.js'):{}; return {gameId:String(c.appId||''),sdkKey:String(c.hsSdkKey||'')}; }catch(e){ return {gameId:'',sdkKey:''}; } })();
-/* Same as the iaa_config "rewards" / "items" in Meow_Burger.hs-dashboard.json */
+/* Same as the iaa_config "rewards" / "items" in Meow_Sakura.hs-dashboard.json */
 const HS_DEFAULTS={
   rewards:{
     'Double Task Bonus':{ task_bonus:1 },          // x the reward of the task just finished
@@ -97,5 +97,5 @@ PF.addHome=()=>HSGame?HSGame.tiktokMission.start('shortcut').then(s=>s==='starte
 PF.shortcutReward=()=>Promise.resolve(false);   /* paid by onGive when TikTok confirms */
 PF.startRevisit=()=>HSGame?HSGame.tiktokMission.start('profile').then(s=>s==='started'?{ok:true}:{ok:false,err:s}):Promise.resolve({ok:false,err:'unsupported'});
 PF.revisitReward=()=>HSGame?HSGame.tiktokMission.refresh().then(()=>HSGame.tiktokMission.done('profile')):Promise.resolve(false);
-PF.share=()=>HSGame?HSGame.share({title:'Meow Burger',subtitle:'Run the cutest burger diner in town!'}).then(r=>r!==null||HSGame.lastShareError==='claimed'?{ok:true}:{ok:false,err:HSGame.lastShareError}):Promise.resolve({ok:false,err:'unsupported'});
+PF.share=()=>HSGame?HSGame.share({title:'Meow Sakura',subtitle:'Run the cutest sakura burger diner in town!'}).then(r=>r!==null||HSGame.lastShareError==='claimed'?{ok:true}:{ok:false,err:HSGame.lastShareError}):Promise.resolve({ok:false,err:'unsupported'});
 { const o=UI.openRevisit; UI.openRevisit=function(){ UI._rvCan=true; o.call(UI); }; }

@@ -144,7 +144,7 @@ async function boot(b,{sdk=false,vw=390,vh=844}={}){
   ok('HUD avoids TikTok capsule',!overlap[0]&&!overlap[1],JSON.stringify(overlap));
   // persistence
   await p.evaluate(()=>{__cp.S.money=4321;});await p.waitForTimeout(2300);
-  ok('save written (memory fallback when localStorage is blocked)',await p.evaluate(()=>JSON.parse(__cp.PF.store.get('catpizza.v3')).mx.shDay.length===10));
+  ok('save written (memory fallback when localStorage is blocked)',await p.evaluate(()=>JSON.parse(__cp.PF.store.get('meowsakura.v3')).mx.shDay.length===10));
   ok('no page errors (web)',errs.length===0,errs.slice(0,3).join(' | '));
   await p.close();
   /* ---------- fake TikTok SDK ---------- */

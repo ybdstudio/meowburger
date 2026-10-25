@@ -91,7 +91,7 @@ const UI={
     $('modalRoot').querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>UI.testTool(b.dataset.x,b));
     $('sSound').onclick=()=>{S.sound=!S.sound;$('sSound').textContent='Sound: '+(S.sound?'ON':'OFF');save()};
     let armed=false;$('sReset').onclick=()=>{if(!armed){armed=true;$('sReset').textContent='Tap again to confirm';return}resetGame();UI.close();UI.toast('Fresh start!')}},
-  milestone(){UI.modal(`<div class="trophy">${UI_ICON.star}</div><h2>GRAND OPENING COMPLETE</h2><p class="big">Meow Burger is now a Burger Palace!</p>
+  milestone(){UI.modal(`<div class="trophy">${UI_ICON.star}</div><h2>GRAND OPENING COMPLETE</h2><p class="big">Meow Sakura is now a Sakura Palace!</p>
     <div class="mstats"><div><b>${fmtTime(S.playTime)}</b><small>play time</small></div><div><b>${S.stats.served}</b><small>customers served</small></div><div><b>${fmtNum(S.stats.collected)}</b><small>coins collected</small></div></div><p class="note">Keep playing: every upgrade and optional table stays available.</p>`,'wide')},
 };
 function fmtTime(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}

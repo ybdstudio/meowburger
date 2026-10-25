@@ -133,7 +133,7 @@ const results=[]; const ok=(n,c,i='')=>results.push((c?'PASS ':'FAIL ')+n+(i?' â
   ok('Ã—2 task bonus from a real task completion shows a number',await p.evaluate(()=>{const A=__NWIN.__cp; A.UI._cd={}; A.UI._offer=null; const t=A.curTask(); if(t.kind==='buy') A.S.bought[t.spot]=true; else if(t.kind==='count') A.S.stats[t.stat]=(A.S.stats[t.stat]||0)+t.n; for(let i=0;i<5;i++) A.update(.05); const o=A.UI._offer; return !!o&&/\+\d+$/.test(o.text)&&!/NaN/.test(o.text)}),await p.evaluate(()=>__NWIN.__cp.UI._offer&&__NWIN.__cp.UI._offer.text));
   ok('Add to Phone Screen button stays visible after the bonus was claimed',await p.evaluate(()=>__NWIN.__cp.UI.homeDone()&&__NWIN.__cp.UI.hits().some(h=>h.id==='btn_home')));
   ok('money is a number',await p.evaluate(()=>Number.isFinite(__NWIN.__cp.S.money)));
-  ok('save via setStorageSync',await p.evaluate(()=>!!__store['meowburger.v3']));
+  ok('save via setStorageSync',await p.evaluate(()=>!!__store['meowsakura.v3']));
   ok('no page errors',errs.length===0,errs.slice(0,4).join(' | '));
   { const p2=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2}); await p2.addInitScript(()=>{window.__noMenu=true});
     await p2.goto('http://localhost:'+port+'/__h'); await p2.waitForFunction(()=>window.__NWIN&&__NWIN.__cpStarted,null,{timeout:60000});
