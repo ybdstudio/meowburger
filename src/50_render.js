@@ -329,7 +329,9 @@ function drawPlanter(x,y,w,d){ const H=.42; box(MD,x,y,0,w,d,H,'#7a4a2a','#b56f3
   const n=Math.max(2,Math.round(Math.max(w,d)/.45)), along=w>=d;
   for(let i=0;i<n;i++){ const f=(i+.5)/n, cx=along?x+w*f:x+w/2, cy=along?y+d/2:y+d*f, [sx,sy]=P(cx,cy,H), R=TW*.2;
     for(const [ox,oy,r,c] of [[0,-R*.55,R,'#3f8f2c'],[-R*.45,-R*.3,R*.7,'#3f8f2c'],[R*.45,-R*.3,R*.7,'#3f8f2c']]){ ctx.beginPath(); ctx.arc(sx+ox,sy+oy,r,0,7); ctx.fillStyle=c; ctx.fill(); ctx.lineWidth=MD.OL*.8; ctx.strokeStyle='#245a1a'; ctx.stroke(); }
-    ctx.beginPath(); ctx.arc(sx-R*.15,sy-R*.7,R*.6,0,7); ctx.fillStyle='#5db53a'; ctx.fill(); ctx.beginPath(); ctx.arc(sx-R*.3,sy-R*.85,R*.28,0,7); ctx.fillStyle='#86d14f'; ctx.fill(); } }
+    ctx.beginPath(); ctx.arc(sx-R*.15,sy-R*.7,R*.6,0,7); ctx.fillStyle='#5db53a'; ctx.fill(); ctx.beginPath(); ctx.arc(sx-R*.3,sy-R*.85,R*.28,0,7); ctx.fillStyle='#86d14f'; ctx.fill();
+    /* azalea-style blossoms on the bushes (Meow Sakura) */
+    for(const [ox,oy,k] of [[-R*.5,-R*.75,1],[R*.35,-R*.95,0],[R*.6,-R*.35,1],[-R*.1,-R*.25,0],[R*.05,-R*1.25,1]]) sakuraFlower(ctx,sx+ox,sy+oy,R*.26,k?SAK.petal:'#fff4f7',SAK.core,SAK.petalLn,MD.OL*.4); } }
 function drawStation(st){
   if(st.type==='pantry'){ drawShelf(st); const [tx,ty]=P(st.x+st.w/2,st.y+st.d/2,1.85); if(st.stock<stCap(st)){ const p=st.timer/stInterval(st); ell(MD,tx,ty,TW*.14,TW*.14,'rgba(255,255,255,.95)',INK,MD.OL*.8);ctx.beginPath();ctx.moveTo(tx,ty);ctx.arc(tx,ty,TW*.105,-Math.PI/2,-Math.PI/2+p*Math.PI*2);ctx.closePath();ctx.fillStyle='#7ed957';ctx.fill(); } return; }
   drawCodeStation(st);

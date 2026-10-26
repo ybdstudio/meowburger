@@ -8,6 +8,7 @@ Meow Sakura continues from Meow Burger v1.6.4 (history below).
 - Side characters (cashier, waiter, cleaner, customers, VIPs, manager): the one drawn walk now also serves the diagonal front directions (mirrored), and standing sideways shows the front three-quarter view instead of a back view or a cut-off face; cat04 uses clean neighbour views where its tail was clipped.
 - Loading, icon, share / home / revisit popups: the kit's grey cat is recoloured to the player's orange and its cap logo replaced by the player's white bear face (`tools/sakura_cat.py`). Both icon sizes now use the same art.
 - Map stage pictures: pink roofs, sakura trees and petals.
+- Decor planter bushes carry pink blossoms.
 
 ## v1.0.0 — Meow Sakura
 - New name and restaurant: a Japanese sakura diner. All cats (player, staff, customers, VIP) are unchanged.
