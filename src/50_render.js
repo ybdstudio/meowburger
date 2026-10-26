@@ -57,17 +57,19 @@ function drawStaff(e,name,anim){
 /* ---- customers / VIP / cleaner / manager: approved art (8-direction idle; drawn walk cycles where the sheet has them,
         otherwise the body stays still and only the leg strip steps) ---- */
 const SHEET_H={chef:1.06,cashier:1.0,waiter:1.0,cleaner:1.0,cat01:.95,cat02:.95,cat03:.95,cat04:.95,vip01:1.0,vip02:1.0,manager:1.0};
-/* Meow Sakura sheets: the player has a full 8-direction walk + tray-carry set; the other roles have one drawn walk
-   (screen-right, mirrored for screen-left) and step their legs on the 8-direction idle art for the other directions.
-   A few side-profile idles lost face fill when cut, so those directions reuse the clean neighbour view. */
-const SIDE_WALK={walk:{90:[270,1]}};
+/* Character sheets: the player has a full 8-direction walk + tray-carry set; the other roles have one drawn walk
+   (front three-quarter, screen-right). That walk serves screen-right (270) and down-right (315) as drawn, and screen-left (90)
+   and down-left (45) mirrored; the other directions step the legs on the 8-direction idle art.
+   Standing sideways (90/270) shows the front three-quarter idle, the same view as the walk, so a cat does not turn its back
+   when it stops (this also covers the side idles that lost face fill when cut). The player's idle_270 is drawn as a back
+   view, so it uses idle_90 mirrored, which matches its walk_270 profile. Walk frames are fitted to the idle head height by
+   CHAR_FIT (src/19_char_fit.js, tools/char_fit.py; keep the two remap tables in step). */
+const SIDE_REMAP={idle:{90:[45,0],270:[315,0]},walk:{45:[270,1],90:[270,1],315:[270,0]}};
 const SHEET_REMAP={
-  chef:{walk:{0:'legs',180:'legs'}},
-  cashier:SIDE_WALK, waiter:SIDE_WALK, cleaner:SIDE_WALK, cat01:SIDE_WALK, cat03:SIDE_WALK, vip02:SIDE_WALK,
-  cat02:{idle:{90:[45,0],270:[315,0]},walk:{90:[270,1]}},
-  cat04:{idle:{135:[225,1]},walk:{90:[270,1]}},
-  vip01:{idle:{90:[270,1]},walk:{90:[270,1]}},
-  manager:{idle:{90:[270,1]},walk:{90:[270,1]}},
+  chef:{idle:{270:[90,1]}},
+  cashier:SIDE_REMAP, waiter:SIDE_REMAP, cleaner:SIDE_REMAP, cat01:SIDE_REMAP, cat02:SIDE_REMAP, cat03:SIDE_REMAP,
+  vip01:SIDE_REMAP, vip02:SIDE_REMAP, manager:SIDE_REMAP,
+  cat04:{idle:{90:[45,0],270:[315,0],45:[315,1],135:[225,1]},walk:SIDE_REMAP.walk},   /* cat04 idle_45 / idle_135: tail clipped when cut */
 };
 /* number of drawn walk frames per set/direction (the new sheets have 5–8) */
 const WALK_N={}; function walkN(name,d){ const key=name+d; if(WALK_N[key]===undefined){ let n=0; while(MORE_SPRITES[name]['walk'+(n+1)+'_'+d]) n++; WALK_N[key]=n; } return WALK_N[key]; }
@@ -84,20 +86,23 @@ function drawSheetChar(e,name,anim,opts={}){
   else if(anim==='collect'&&set.collect) pose(set.collect);
   else if(anim==='tablet'&&set.tablet1) pose(set['tablet'+(1+Math.floor(t*3)%4)]);
   else if(anim==='talk'&&set.talk_happy) pose(set.talk_happy);
-  else if(e.carry&&e.carry.length&&!seated&&set['cwalk1_'+d]){ if(walking&&(d===0||d===180)){ m=set['cwalk1_'+d]; legs=true; } else m=set['cwalk'+(walking?1+Math.floor(t*8)%4:1)+'_'+d]; flip=0; }
+  else if(e.carry&&e.carry.length&&!seated&&set['cwalk1_'+d]){ m=set['cwalk'+(walking?1+Math.floor(t*8)%4:1)+'_'+d]; flip=0; }
   else if(walking){ const rw=rm.walk&&rm.walk[d];
-    if(rw==='legs'||!set['walk1_'+d]) legs=true;
-    else { const [wd,wf]=rw||[d,0], n=walkN(name,wd)||4; m=set['walk'+(1+Math.floor(t*(n>4?11:8))%n)+'_'+wd]; flip=wf; } }
+    const [wd,wf]=Array.isArray(rw)?rw:[d,0];
+    if(rw==='legs'||!set['walk1_'+wd]) legs=true;   /* no drawn walk for this direction: step the legs on the idle art */
+    else { const n=walkN(name,wd)||4; m=set['walk'+(1+Math.floor(t*(n>4?11:8))%n)+'_'+wd]; flip=wf; } }
   if(!m||!m.img) return [sx,sy0];
   const k=TW*(SHEET_H[name]||1)/150*(opts.scale||1)*m.s;
   let sy=sy0, dx=0, sqx=1, sqy=1;
+  const fitK=m.key&&CHAR_FIT[name]&&CHAR_FIT[name][m.key]; if(fitK&&!legs) sqy=fitK[d]||1;   /* walk frame fitted to the idle head height */
   if(anim==='happy') sy-=Math.abs(Math.sin(t*7))*TW*.05;
   if(anim==='mad'||anim==='sitmad') dx=Math.sin(t*38)*TW*.012;
   if(anim==='eat'){ const b=Math.max(0,Math.sin(t*6)); sqy=1-b*.035; sqx=1+b*.02; }
   if(!walking&&!seated&&anim!=='sleep'){ const br=Math.sin(t*2.2+(e.seed||0))*.012; sqy*=1+br; sqx*=1-br*.5; }
   if(!seated){ctx.save();ctx.fillStyle=COL.shadow;ctx.beginPath();ctx.ellipse(sx,sy0,TW*.24*(opts.scale||1),TW*.085*(opts.scale||1),0,0,7);ctx.fill();ctx.restore();}
-  const hand=m.tray?m.tray:(SHEET_HAND[d]||SHEET_HAND[0]);
-  const hx=sx+(hand[0]*m.w-m.ax)*k, hy=sy+(hand[1]*m.h-m.ay)*k;
+  const trayFix=m.key&&CHAR_TRAY[name]&&CHAR_TRAY[name][m.key];
+  const hand=trayFix||m.tray||(SHEET_HAND[d]||SHEET_HAND[0]);
+  const hx=sx+(hand[0]*m.w-m.ax)*k, hy=sy+(hand[1]*m.h-m.ay)*k*sqy;
   const holding=e.carry&&e.carry.length&&!seated&&anim!=='sleep';
   const back=d>=135&&d<=225;
   const stack=()=>drawHeldStack(e.carry,hx,hy,opts.customer,!!m.tray);

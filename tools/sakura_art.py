@@ -6,6 +6,7 @@ import sys,os,io,re,json,base64,glob
 import numpy as np
 from PIL import Image,ImageDraw,ImageFont,ImageFilter
 from scipy import ndimage
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))); from sakura_cat import match_cat   # kit cat -> the player's look
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KIT=sys.argv[1] if len(sys.argv)>1 else os.environ.get('SAKURA_KIT','/home/claude/jp/src_zip')
 FONT=os.environ.get('SAKURA_FONT',os.path.join(ROOT,'tools','fonts','Fredoka.ttf'))
@@ -132,16 +133,19 @@ def blossom(im,cx,cy,R,petal=(255,176,200),dark=(216,88,132),core=(255,214,92)):
     d.ellipse([cx-R*.2,cy-R*.2,cx+R*.2,cy+R*.2],fill=core+(255,),outline=dark+(255,),width=max(2,R//24))
 JP='04_tiktok_ui/'
 ui={}
-ui['loading_bg.jpg']=resize_w(logo_sakura(Image.open(kit('loading_bg_jp.jpg'))),941)
-ha=Image.open(kit('pop_home_art_jp.jpg')).convert('RGB'); W=ha.width/1280
+CAT_IMG=lambda n: match_cat(Image.open(kit(n)),n)
+ui['loading_bg.jpg']=resize_w(logo_sakura(CAT_IMG('loading_bg_jp.jpg')),941)
+ha=CAT_IMG('pop_home_art_jp.jpg').convert('RGB'); W=ha.width/1280
 ui['pop_home_art.jpg']=resize_w(retext(ha,(int(470*W),int(345*W),int(830*W),int(405*W)),'Meow Sakura',(255,255,255),int(46*W),wght=560),640)
-rp=Image.open(kit('pop_revisit_profile_jp.jpg')).convert('RGB'); W=rp.width/1048
+rp=CAT_IMG('pop_revisit_profile_jp.jpg').convert('RGB'); W=rp.width/1048
 ui['pop_revisit_profile.jpg']=resize_w(retext(rp,(int(170*W),int(232*W),int(905*W),int(300*W)),'Click Meow Sakura in profile.',(72,36,24),int(52*W),wght=700),640)
-for n in ['pop_home_steps','pop_revisit_coins','pop_share_art']: ui[n+'.jpg']=resize_w(Image.open(kit(n+'_jp.jpg')).convert('RGB'),640)
+for n in ['pop_home_steps','pop_revisit_coins']: ui[n+'.jpg']=resize_w(Image.open(kit(n+'_jp.jpg')).convert('RGB'),640)
+ui['pop_share_art.jpg']=resize_w(CAT_IMG('pop_share_art_jp.jpg').convert('RGB'),640)
 for n in ['btn_home','btn_revisit','btn_share']:
     b=tidy(Image.open(kit(n+'_jp.png')),minfrac=.02,maxside=10000); ui[n+'.png']=b.resize((150,round(150*b.height/b.width)),Image.LANCZOS)
 ui['paw_thumb.png']=tidy(Image.open(kit('paw_thumb_jp.png')),maxside=72)
-for n,w in [('icon_192',192),('icon_512',512)]: ui[n+'.png']=Image.open(kit(n+'_jp.png')).convert('RGB').resize((w,w),Image.LANCZOS)
+icon=CAT_IMG('icon_512_jp.png').convert('RGB')   # one icon art for both sizes (the kit's two icons differ)
+for n,w in [('icon_192',192),('icon_512',512)]: ui[n+'.png']=icon.resize((w,w),Image.LANCZOS)
 for n,im in ui.items():
     p=os.path.join(MIN,n)
     if n.endswith('.jpg'): im.convert('RGB').save(p,quality=88,optimize=True)

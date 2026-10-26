@@ -2,6 +2,13 @@
 
 Meow Sakura continues from Meow Burger v1.6.4 (history below).
 
+## v1.0.1 — Characters and matching art
+- Player: the 4 drawn walk frames are used facing the camera and facing away (before: idle art with stepping legs); carrying away from the camera keeps the tray on one side; idle facing screen-right uses the matching profile.
+- Walk and carry-walk frames are fitted to the idle head height (`src/19_char_fit.js`, `tools/char_fit.py`), so cats no longer dip when they start walking diagonally or sideways. Character images unchanged.
+- Side characters (cashier, waiter, cleaner, customers, VIPs, manager): the one drawn walk now also serves the diagonal front directions (mirrored), and standing sideways shows the front three-quarter view instead of a back view or a cut-off face; cat04 uses clean neighbour views where its tail was clipped.
+- Loading, icon, share / home / revisit popups: the kit's grey cat is recoloured to the player's orange and its cap logo replaced by the player's white bear face (`tools/sakura_cat.py`). Both icon sizes now use the same art.
+- Map stage pictures: pink roofs, sakura trees and petals.
+
 ## v1.0.0 — Meow Sakura
 - New name and restaurant: a Japanese sakura diner. All cats (player, staff, customers, VIP) are unchanged.
 - Walls: wooden planks with paper lanterns and sakura sprigs along the cap; right baseboard in wood. Trees are sakura trees; petals on the lawn.

@@ -1,7 +1,7 @@
 /* =====================================================================
    00_config.js — every tunable number lives here (data-driven design)
    ===================================================================== */
-const VERSION='1.0.0';   /* Meow Sakura */
+const VERSION='1.0.1';   /* Meow Sakura */
 const SAVE_KEY='meowsakura.v3', LEGACY_SAVE_KEY='meowsakura.v0'; /* v4 keeps the v3 save format */
 const REF=144;          // sprite resolution: px per tile width for object sprites
 const REF_C=128;        // sprite resolution for character sheets

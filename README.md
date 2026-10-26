@@ -2,7 +2,7 @@
 
 Idle tycoon mini game for **TikTok Minis** (native canvas build) in the Meow series: the Meow Burger game (same cats, same menu, same economy) moved into a Japanese sakura restaurant. It runs on the Meow Pizza v4.8 engine.
 
-- Current version: **v1.0.0** (`VERSION` in `src/00_config.js`)
+- Current version: **v1.0.1** (`VERSION` in `src/00_config.js`)
 - TikTok App ID / HS Game ID: not set yet. Meow Sakura is a new game, so it needs its own App ID, SDK key and ad units in `src/native/hs-config.json` (Meow Burger's were `7699569778830231573`).
 - Save key: `meowsakura.v3` (separate from Meow Burger saves).
 - Ads, missions, share and cloud save run through the HS TikTok SDK kit (`vendor/hs-tiktok-sdk-1.0.7`).
@@ -22,6 +22,9 @@ Idle tycoon mini game for **TikTok Minis** (native canvas build) in the Meow ser
 - `src/11_sakura.js`: code-drawn theme pieces (blossoms, paper lanterns, sprigs, pennants, noren curtains, petals).
 - Code-drawn restaurant: plank walls with lanterns and sakura sprigs (`30_world.js`), sakura trees (`24_env.js`), yatai stalls with pink roofs, noren and lanterns (`26_stations_code.js`), pink sakura VIP rug and table, pennants, pastel balloon arch (`50_render.js`).
 - `tools/sakura_art.py KIT_DIR`: swaps prop/food sprites and the TikTok UI art from the unzipped `meow-jp-full` kit, relettering "Meow Burger" to "Meow Sakura" on the loading logo and popups (font: `tools/fonts/Fredoka.ttf`, OFL).
+- `tools/sakura_cat.py`: recolours the kit's cat in the loading / icon / popup art to the player's look (called by `sakura_art.py`).
+- `tools/char_fit.py` -> `src/19_char_fit.js`: walk-frame head-height fit and tray-point overrides (keep its remap table in step with `SHEET_REMAP` in `50_render.js`).
+- `tests/charstrip.js`: renders a character in 8 directions in the real renderer (`node tests/charstrip.js out.png player 1`).
 - `tests/shot.js`: screenshots of the web build for art review (`SAVE=state.json OUT=dir NOHUD=1 node tests/shot.js`; a late-game `state.json` comes from `SAVEOUT=state.json node tests/bot.js`).
 
 ## Layout

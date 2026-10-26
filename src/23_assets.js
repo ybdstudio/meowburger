@@ -66,7 +66,7 @@ async function preloadAssets(onProgress){
      raw_* the same art, paler and less baked, for the oven / prep board. Baked at 3x for crisp high-DPI rendering. */
   for(const k in FOOD_ART) jobs.push(async()=>{ try{ const im=await loadImage(FOOD_ART[k]); bakeFoodArt(k,im); ASSET_REPORT.loaded++; } catch(err){ ASSET_REPORT.missing.push('food_'+k); } });
   for(const k in KIT_OBJ) jobs.push(async()=>{ try{ const im=await loadImage(KIT_OBJ[k].src); bakeKitObj(k,im,KIT_OBJ[k]); ASSET_REPORT.loaded++; } catch(err){ ASSET_REPORT.missing.push('kit_'+k); } });
-  for(const name in MORE_SPRITES) for(const pose in MORE_SPRITES[name]){ const m=MORE_SPRITES[name][pose];
+  for(const name in MORE_SPRITES) for(const pose in MORE_SPRITES[name]){ const m=MORE_SPRITES[name][pose]; m.key=pose;
     jobs.push(async()=>{ try{ m.img=await loadImage(m.src); ASSET_REPORT.loaded++; } catch(err){ ASSET_REPORT.missing.push(name+'_'+pose); } }); }
   for(const k in ENV_ART) jobs.push(async()=>{ try{ const im=await loadImage(ENV_ART[k].src); ENV[k]={img:im,w:ENV_ART[k].w,h:ENV_ART[k].h,tip:ENV_ART[k].tip||.5}; ASSET_REPORT.loaded++; } catch(err){ ASSET_REPORT.missing.push('env_'+k); } });
   let done=0; const total=jobs.length||1, q=jobs.slice();
