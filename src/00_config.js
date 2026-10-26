@@ -1,8 +1,8 @@
 /* =====================================================================
    00_config.js — every tunable number lives here (data-driven design)
    ===================================================================== */
-const VERSION='1.0.1';   /* Meow Sakura */
-const SAVE_KEY='meowsakura.v3', LEGACY_SAVE_KEY='meowsakura.v0'; /* v4 keeps the v3 save format */
+const VERSION='1.0.1-autotest';   /* AUTO-PLAY TEST BUILD (branch meowsakura-autoplay) */   /* Meow Sakura */
+const SAVE_KEY='meowsakura.autotest.v3', LEGACY_SAVE_KEY='meowsakura.autotest.v0';   /* test build: own save, never mixes with the release save */ /* v4 keeps the v3 save format */
 const REF=144;          // sprite resolution: px per tile width for object sprites
 const REF_C=128;        // sprite resolution for character sheets
 
@@ -35,8 +35,8 @@ const CFG={
   },
   /* Engagement gifts — fixed amount per claim */
   gifts:{revisit:100, share:50, home:100, showAfter:'t_upgrade'},
-  /* Auto play (AUTO button). Off in this build: button hidden, saved S.auto ignored */
-  autoPlay:false,
+  /* Auto play test build: AUTO button shown, auto play ON on first start, game speed 1x-4x in Settings (S.gameSpeed) */
+  autoPlay:true, autoDefault:true, speeds:[1,2,3,4],
 };
 const round10=n=>Math.max(10,Math.round(n/10)*10);
 

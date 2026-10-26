@@ -12,6 +12,7 @@ Idle tycoon mini game for **TikTok Minis** (native canvas build) in the Meow ser
 | Branch | What it holds |
 |---|---|
 | `meowsakura` | Meow Sakura source (sakura restaurant, same cats) |
+| `meowsakura-autoplay` | Meow Sakura auto play test build: auto ON at start, speed 1x-4x in Settings (not for release) |
 | `main` | Meow Burger source code, build scripts, tests, art pipeline tools, docs |
 | `release/tiktok-native-v1.6.4` | Built TikTok Minis upload package (`native/`, with `game.json` at its root) and `native.hs-dashboard.json` for the HS dashboard |
 | `web-build` | Web test build (`index.html`, one self-contained file for phone testing) and the H5 TikTok Minis web variant (`minis/`) |

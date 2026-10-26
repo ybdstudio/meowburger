@@ -59,6 +59,10 @@ function migrateV1(o){ // v2 save (Halloween build) -> v3: keep money, purchases
 function load(){try{const r=PF.store.get(SAVE_KEY);if(r){const o=JSON.parse(r);const f=freshState();const s=Object.assign(f,o);s.stats=Object.assign(freshState().stats,o.stats||{});
     if(!o.v4){ if(s.task>=40) s.task+=2; else if(s.task>=29) s.task+=1; } s.v4=true; if(!s.mx||typeof s.mx!=='object') s.mx={}; if(!(s.playTime>=0)||!isFinite(s.playTime)) s.playTime=0; if(!isFinite(s.money)) s.money=CFG.startMoney; if(!isFinite(s.stats.collected)) s.stats.collected=0; return s}
   const old=PF.store.get(LEGACY_SAVE_KEY);if(old) return migrateV1(JSON.parse(old));}catch(e){}return freshState()}
+/* auto play test build: auto ON on first start; old ×2 auto setting becomes game speed 2x */
+function autoDefaults(s){ if(!CFG.autoPlay) return s; if(s.auto===2){ s.auto=1; s.gameSpeed=Math.max(s.gameSpeed||1,2); }
+  if(CFG.autoDefault&&!s.autoSet){ s.auto=1; s.autoSet=1; } if(!CFG.speeds.includes(s.gameSpeed)) s.gameSpeed=1; return s; }
+function gameSpeed(){ return CFG.autoPlay&&S?(S.gameSpeed||1):1; }
 function save(){try{const o=Object.assign({},S);o.boostUntil=0;o.boostCd=0;PF.store.set(SAVE_KEY,JSON.stringify(o))}catch(e){}}
 function resetGame(){S=freshState();S.taskBase=statSnap();SPOTS.forEach(s=>s.paid=0);customers=[];workers=[];FOODS.forEach(k=>tray[k]=0);player.x=3.4;player.y=5.6;player.carry=[];stations=[];tables=[];
   rebuildWorld(false);refreshSolids();buildFloorCache(TW);save();UI._last={};UI.setTask()}
@@ -78,13 +82,13 @@ let last=0,saveT=0;
    performance.now (TikTok native: no global performance) — a negative dt once sent the clock back 56 years */
 function frame(ts){try{ if(typeof ts!=='number'||!isFinite(ts)) ts=performance.now(); if(last===null||ts<last) last=ts;
     let dt=(ts-last)/1000; if(!(dt>0)) dt=0; dt=Math.min(.05,dt); last=ts;
-    if(!UI.modalOpen&&!paused){ const inp=getInput(); update(dt,inp); if(CFG.autoPlay&&S.auto===2&&AUTOP.manualT<=0) update(dt,inp); }
+    if(!UI.modalOpen&&!paused){ const inp=getInput(), n=gameSpeed(); for(let i=0;i<n;i++) update(dt,inp); }   /* game speed 1x-4x: n fixed steps per frame */
     render();UI.frame();saveT+=dt;if(saveT>2){saveT=0;save()}
   }catch(err){console.error(err);window.__cpFrameErrN=(window.__cpFrameErrN||0)+1;if(!window.__cpFrameErr){window.__cpFrameErr=true;UI.toast('Error: '+err.message)}}
   requestAnimationFrame(frame)}
 async function boot(){
   try{
-    S=load(); if(!S.taskBase) S.taskBase=statSnap(); S.stage=curStage();
+    S=autoDefaults(load()); if(!S.taskBase) S.taskBase=statSnap(); S.stage=curStage();
     resize(); window.addEventListener('resize',resize); bindInput(); UI.init();
     UI.loading(.03,'Heating the grill…');
     if(document.fonts&&document.fonts.load){ try{await Promise.race([document.fonts.load('700 20px Fredoka'),new Promise(r=>setTimeout(r,1500))])}catch(_){} }

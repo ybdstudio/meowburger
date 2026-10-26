@@ -2,6 +2,13 @@
 
 Meow Sakura continues from Meow Burger v1.6.4 (history below).
 
+## v1.0.1-autotest — auto play test build (branch `meowsakura-autoplay`)
+- For testing on TikTok native only; not for release.
+- Auto play is ON when the game starts (AUTO button shown); drag to take over for a moment.
+- Settings: Auto play ON/OFF and game speed 1x / 2x / 3x / 4x (the game runs that many fixed steps per frame, auto or manual). The AUTO button shows the speed (ON ×3).
+- Own save key `meowsakura.autotest.v3`; project name "Meow Sakura Autotest". Same App ID / ad setup as the release when `hs-config.json` is filled.
+- `tests/qa_autoplay.js`: auto ON at start, player moves by itself, Settings buttons, measured speed 1.00 / 2.00 / 3.00 / 3.99x.
+
 ## v1.0.1 — Characters and matching art
 - Player: the 4 drawn walk frames are used facing the camera and facing away (before: idle art with stepping legs); carrying away from the camera keeps the tray on one side; idle facing screen-right uses the matching profile.
 - Walk and carry-walk frames are fitted to the idle head height (`src/19_char_fit.js`, `tools/char_fit.py`), so cats no longer dip when they start walking diagonally or sideways. Character images unchanged.

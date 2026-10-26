@@ -7,8 +7,8 @@ const UI={
   init(){
     $('icCoin').innerHTML=UI_ICON.coin;$('taskReward').querySelector('i').innerHTML=UI_ICON.coin;$('icStar').innerHTML=UI_ICON.star;$('icPin').innerHTML=UI_ICON.pin;
     for(const [id,ic] of [['bShop','shop'],['bUpg','upgrade'],['bTask','task'],['bMap','map'],['bSet','gear']]) $(id).querySelector('i').innerHTML=UI_ICON[ic];
-    UI.syncAuto=()=>{const b=$('autoBtn');if(!b)return;b.classList.toggle('on',!!S.auto);b.classList.toggle('x2',S.auto===2);b.setAttribute('aria-pressed',String(!!S.auto));b.querySelector('small').textContent=S.auto===2?'×2':S.auto?'ON':'OFF'};
-    if(!CFG.autoPlay){S.auto=0;$('autoBtn').hidden=true;$('autoBtn').style.display='none';} $('autoBtn').onclick=()=>{S.auto=S.auto===2?0:S.auto?2:1;AUTOP.manualT=0;AUTOP.cur=null;save();UI.syncAuto();UI.toast(S.auto===2?'Auto play ×2 speed':S.auto?'Auto play ON — drag to take over':'Auto play OFF')};UI.syncAuto();
+    UI.syncAuto=()=>{const b=$('autoBtn');if(!b)return;b.classList.toggle('on',!!S.auto);b.classList.toggle('x2',gameSpeed()>1);b.setAttribute('aria-pressed',String(!!S.auto));b.querySelector('small').textContent=(S.auto?'ON':'OFF')+(gameSpeed()>1?' ×'+gameSpeed():'')};
+    if(!CFG.autoPlay){S.auto=0;$('autoBtn').hidden=true;$('autoBtn').style.display='none';} $('autoBtn').onclick=()=>{S.auto=S.auto?0:1;AUTOP.manualT=0;AUTOP.cur=null;save();UI.syncAuto();UI.toast(S.auto?'Auto play ON — drag to take over':'Auto play OFF')};UI.syncAuto();
     $('bShop').onclick=()=>UI.openShop(); $('bUpg').onclick=()=>UI.openUpgrade(); $('bTask').onclick=()=>UI.openTasks(); $('bMap').onclick=()=>UI.openMap(); $('bSet').onclick=()=>UI.openSettings();
     $('progPill').onclick=()=>UI.openMap(); $('plusBtn').onclick=()=>UI.openShop(); $('taskCard').onclick=()=>UI.openTasks();
     $('boostBtn').onclick=()=>UI.startAd();
@@ -81,6 +81,8 @@ const UI={
   /* ---- settings ---- */
   openSettings(){const rep=ASSET_REPORT;
     UI.modal(`<h2>SETTINGS</h2><div class="srow"><button class="buy" id="sSound">Sound: ${S.sound?'ON':'OFF'}</button></div>
+      ${CFG.autoPlay?`<div class="srow"><button class="buy${S.auto?'':' warn'}" id="sAuto" aria-pressed="${!!S.auto}">Auto play: ${S.auto?'ON':'OFF'}</button></div>
+      <div class="srow speedrow">${CFG.speeds.map(v=>`<button class="buy${gameSpeed()===v?' sel':''}" data-spd="${v}" aria-pressed="${gameSpeed()===v}">${v}x</button>`).join('')}</div>`:''}
       <div class="srow"><button class="buy warn" id="sReset">Restart restaurant</button></div>
       ${PF.isMinis?'':`<div class="mx-tools"><b>Minis test tools</b><small>Only visible outside TikTok. Ads and TikTok screens are simulated.</small>
         <span><button class="buy" data-x="days">Reset daily gifts</button><button class="buy" data-x="home">Reset Add-to-Home</button>
@@ -89,6 +91,8 @@ const UI={
         <button class="buy" data-x="money">+500 coins</button></span><small id="mxLog">${UI.adLog()}</small></div>`}
       <p class="note">Assets: ${rep.baked} baked from the manifest, ${rep.loaded} loaded from files${rep.missing.length?`, <b>${rep.missing.length} missing:</b> ${rep.missing.join(', ')}`:''}${rep.errors.length?`<br>${rep.errors.join('<br>')}`:''}<br>Play time ${fmtTime(S.playTime)} · v${VERSION} · ${PF.isMinis?'TikTok Minis':'web (test mode)'}</p>`);
     $('modalRoot').querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>UI.testTool(b.dataset.x,b));
+    if(CFG.autoPlay){ $('sAuto').onclick=()=>{S.auto=S.auto?0:1;AUTOP.manualT=0;AUTOP.cur=null;save();UI.syncAuto();UI.openSettings()};
+      $('modalRoot').querySelectorAll('[data-spd]').forEach(b=>b.onclick=()=>{S.gameSpeed=+b.dataset.spd;save();UI.syncAuto();UI.openSettings();UI.toast('Game speed '+S.gameSpeed+'x')}); }
     $('sSound').onclick=()=>{S.sound=!S.sound;$('sSound').textContent='Sound: '+(S.sound?'ON':'OFF');save()};
     let armed=false;$('sReset').onclick=()=>{if(!armed){armed=true;$('sReset').textContent='Tap again to confirm';return}resetGame();UI.close();UI.toast('Fresh start!')}},
   milestone(){UI.modal(`<div class="trophy">${UI_ICON.star}</div><h2>GRAND OPENING COMPLETE</h2><p class="big">Meow Sakura is now a Sakura Palace!</p>

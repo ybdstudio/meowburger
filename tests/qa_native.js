@@ -52,6 +52,9 @@ const results=[]; const ok=(n,c,i='')=>results.push((c?'PASS ':'FAIL ')+n+(i?' â
   await p.waitForTimeout(450); await p.screenshot({path:OUT+'/n01_loading.png'});
   await p.waitForFunction(()=>window.__NWIN&&__NWIN.__cpStarted,null,{timeout:60000}).catch(()=>{});
   const started=await p.evaluate(()=>!!(window.__NWIN&&__NWIN.__cpStarted)); ok('boots on fake native runtime',started,await p.evaluate(()=>window.__NWIN&&__NWIN.__cpErr||''));
+  /* auto-play test build: auto play must be ON at first start; then switched off so the money checks below are not disturbed */
+  { const ap=await p.evaluate(()=>{const A=__NWIN.__cp; return A&&A.CFG.autoPlay?{auto:A.S.auto,speed:A.S.gameSpeed}:null});
+    if(ap){ ok('auto play ON at first start, speed 1x',ap.auto===1&&ap.speed===1,JSON.stringify(ap)); await p.evaluate(()=>{__NWIN.__cp.S.auto=0}); } }
   if(!started){ await p.screenshot({path:OUT+'/n00_fail.png'}); console.log(results.join('\n'),errs); process.exit(1); }
   const A='__NWIN.__cp';
   ok('art subpackage loaded',await p.evaluate(()=>__log.includes('loadSubpackage art')));
@@ -133,7 +136,8 @@ const results=[]; const ok=(n,c,i='')=>results.push((c?'PASS ':'FAIL ')+n+(i?' â
   ok('Ã—2 task bonus from a real task completion shows a number',await p.evaluate(()=>{const A=__NWIN.__cp; A.UI._cd={}; A.UI._offer=null; const t=A.curTask(); if(t.kind==='buy') A.S.bought[t.spot]=true; else if(t.kind==='count') A.S.stats[t.stat]=(A.S.stats[t.stat]||0)+t.n; for(let i=0;i<5;i++) A.update(.05); const o=A.UI._offer; return !!o&&/\+\d+$/.test(o.text)&&!/NaN/.test(o.text)}),await p.evaluate(()=>__NWIN.__cp.UI._offer&&__NWIN.__cp.UI._offer.text));
   ok('Add to Phone Screen button stays visible after the bonus was claimed',await p.evaluate(()=>__NWIN.__cp.UI.homeDone()&&__NWIN.__cp.UI.hits().some(h=>h.id==='btn_home')));
   ok('money is a number',await p.evaluate(()=>Number.isFinite(__NWIN.__cp.S.money)));
-  ok('save via setStorageSync',await p.evaluate(()=>!!__store['meowsakura.v3']));
+  const SAVE_KEY=(fs.readFileSync(path.join(__dirname,'..','src','00_config.js'),'utf8').match(/SAVE_KEY='([^']+)'/)||[])[1];
+  ok('save via setStorageSync',await p.evaluate(k=>!!__store[k],SAVE_KEY));
   ok('no page errors',errs.length===0,errs.slice(0,4).join(' | '));
   { const p2=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2}); await p2.addInitScript(()=>{window.__noMenu=true});
     await p2.goto('http://localhost:'+port+'/__h'); await p2.waitForFunction(()=>window.__NWIN&&__NWIN.__cpStarted,null,{timeout:60000});

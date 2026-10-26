@@ -165,8 +165,8 @@ const UI={
     if(CFG.autoPlay){ const r=31, cx=W-10-r, cy=dockY-8-r, on=!!S.auto, dy=pressed('auto')?2:0, pul=on?1+Math.sin(t*4.5)*.04:1;
       ctx.save(); ctx.translate(cx,cy+dy); ctx.scale(pul,pul); ctx.beginPath(); ctx.arc(0,3,r,0,7); ctx.fillStyle='rgba(90,52,36,.35)'; ctx.fill();
       ctx.beginPath(); ctx.arc(0,0,r,0,7); ctx.fillStyle=on?'#7ed957':'#d9cbb8'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle=C.ink; ctx.stroke();
-      txt('AUTO',0,-4,15,C.ink,'center',700); txt(S.auto===2?'×2':on?'ON':'OFF',0,12,11,C.ink,'center',600); ctx.restore();
-      hit(cx-r,cy-r,2*r,2*r,()=>{ S.auto=S.auto===2?0:S.auto?2:1; AUTOP.manualT=0; AUTOP.cur=null; save(); UI.toast(S.auto===2?'Auto play ×2 speed':S.auto?'Auto play ON — drag to take over':'Auto play OFF'); },'auto'); }
+      txt('AUTO',0,-4,15,C.ink,'center',700); txt((on?'ON':'OFF')+(gameSpeed()>1?' ×'+gameSpeed():''),0,12,11,C.ink,'center',600); ctx.restore();
+      hit(cx-r,cy-r,2*r,2*r,()=>{ S.auto=S.auto?0:1; AUTOP.manualT=0; AUTOP.cur=null; save(); UI.toast(S.auto?'Auto play ON — drag to take over':'Auto play OFF'); },'auto'); }
     /* hint */
     if(UI.hintHidden) UI.hintA=Math.max(0,UI.hintA-.03); if(UI.hintA>0){ ctx.globalAlpha=UI.hintA; txt('Drag anywhere to move',W/2,dockY-110,13,'#fff','center',600,C.ink,3); ctx.globalAlpha=1; } },
   chip(x,y,label,fn,id,h=34){ const s=h>30?15:13, w=6+24+5+tw(label,s)+10, dy=pressed(id)?2:0; box(x,y+dy,w,h,h/2,['#ffe27a','#f6bd2b'],C.ink,2.5,dy?1:3);
@@ -251,6 +251,9 @@ const UI={
         if(state!=='now') drawImg(icon(state==='lock'?'lock':'check'),x+ww-22,y-8,28,28); } }; });
     r.title='RESTAURANT MAP'; return r; },
   m_settings(w){ const B=UI.B, rep=ASSET_REPORT; const r=[B.btn('Sound: '+(S.sound?'ON':'OFF'),()=>{S.sound=!S.sound;save()},{id:'snd'}),
+      ...(CFG.autoPlay?[B.btn('Auto play: '+(S.auto?'ON':'OFF'),()=>{S.auto=S.auto?0:1;AUTOP.manualT=0;AUTOP.cur=null;save()},{id:'auto2',fill:S.auto?['#8fd86a','#4fa63f']:['#ffb36b','#e07f3c']}),
+        {h:40,gap:6,draw(x,y,ww){ const n=CFG.speeds.length, bw=(ww-6*(n-1))/n; CFG.speeds.forEach((v,j)=>{ const sel=gameSpeed()===v;
+          button(x+j*(bw+6),y,bw,40,v+'x',()=>{S.gameSpeed=v;save();UI.toast('Game speed '+v+'x')},{id:'spd'+v,sz:16,fill:sel?['#8fd86a','#4fa63f']:['#fff3dc','#f3d9b0'],dark:!sel}); }); }}]:[]),
       B.btn(UI._armed?'Tap again to confirm':'Restart restaurant',()=>{ if(!UI._armed){UI._armed=true;return} resetGame();UI.close();UI.toast('Fresh start!'); },{fill:['#ffb36b','#e07f3c'],id:'rst'})];
     if(!PF.isMinis){ const T=[['Reset daily gifts','days'],['Reset Add-to-Home','home'],['Next ad: no fill','fail'],['Next ad: closed early','quit'],['+500 coins','money']];
       r.push(B.note('Test tools (outside TikTok only)',w)); for(let i=0;i<T.length;i+=2) r.push({h:34,gap:6,draw(x,y,ww){ const bw=(ww-6)/2; [T[i],T[i+1]].forEach((tt,j)=>{ if(tt) button(x+j*(bw+6),y,bw,34,tt[0],()=>UI.testTool(tt[1]),{sz:12,id:'tt'+tt[1]}); }); }}); }

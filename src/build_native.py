@@ -53,7 +53,7 @@ for f in sorted(glob.glob(os.path.join(SRC,'[0-9]*.js'))):
 '''+code[z:]
         code=must(code,"function showError(msg){const b=$('errorBox');b.hidden=false;b.querySelector('p').textContent=msg;const l=$('loading');if(l)l.hidden=true}","function showError(msg){window.__cpErr=msg;UI.drawError(msg)}")
         code=must(code,"render();UI.frame();","render();UI.frame();UI.draw();")
-        code=must(code,"    S=load(); if(!S.taskBase) S.taskBase=statSnap(); S.stage=curStage();","    S=load(); if(!S.taskBase) S.taskBase=statSnap(); S.stage=curStage();\n    HSB.start(); /* HS SDK: login + dashboard config; rewards arrive in hsGive */")
+        code=must(code,"    S=autoDefaults(load()); if(!S.taskBase) S.taskBase=statSnap(); S.stage=curStage();","    S=autoDefaults(load()); if(!S.taskBase) S.taskBase=statSnap(); S.stage=curStage();\n    HSB.start(); /* HS SDK: login + dashboard config; rewards arrive in hsGive */")
         code=must(code,"    UI.loading(.03,'Heating the grill…');","    const ldIv=setInterval(()=>{if(!window.__cpStarted&&!window.__cpErr)UI.drawLoading()},120);\n    UI.loading(.03,'Heating the grill…');")
         code=must(code,"""    UI.loading(.08,'Toasting the buns…');
     await preloadAssets(p=>UI.loading(.08+p*.88,""","""    await new Promise((res,rej)=>{ const T=PF.sdk(); if(!T||typeof T.loadSubpackage!=='function') return res();
@@ -96,7 +96,7 @@ module.exports = {
 '''%(APPID,HSKEY))
 # ---- 4. configs
 json.dump({"deviceOrientation":"portrait","subpackages":[{"name":"art","root":"art/"}]},open(os.path.join(OUT,'game.json'),'w'),indent=2)
-json.dump({"appid":APPID,"projectname":"Meow Sakura","description":"Meow Sakura","compileType":"game",
+json.dump({"appid":APPID,"projectname":"Meow Sakura Autotest","description":"Meow Sakura - auto play test build","compileType":"game",
            "setting":{"urlCheck":False,"es6":True,"postcss":True,"minified":True}},open(os.path.join(OUT,'project.config.json'),'w'),indent=2)
 # ---- 4b. HS dashboard JSON, NEXT TO the package (never uploaded): paste its iaa_config in HS → Ads Config → Edit raw JSON
 GAME_LABELS=re.findall(r"label:'([^']+)'",open(os.path.join(SRC,'05_platform.js')).read().split('const AD_PLACEMENTS=')[1].split('};')[0])
