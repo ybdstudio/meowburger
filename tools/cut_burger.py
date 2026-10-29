@@ -1,4 +1,4 @@
-# Meow Burger: cut character poses from the approved sheets (kit v4 + user-attached player sheets).
+# Meow Sakura / Meow Burger: cut character poses from the approved sheets (kit v4 + user-attached player sheets).
 import numpy as np, json, io, base64, sys, os
 from PIL import Image, ImageDraw, ImageFilter
 from scipy import ndimage

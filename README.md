@@ -37,7 +37,7 @@ Idle tycoon mini game for **TikTok Minis** (native canvas build) in the Meow ser
 - `assets/`: UI and loading art, icons. `vendor/`: HS SDK kit (do not edit).
 - `tools/`: art pipeline (`matte.py`, `build_chars.py`, `build_env.py`, `build_kit_art.py`…). These read source sheets from absolute paths; see the `art-source` branch.
 - `tests/`: `bot.js` (full playthrough), `qa_native.js` (fake TikTok runtime), `qa_minis.js` (web), and others.
-- `docs/`: the standard tycoon ad scenario, build notes, and legacy Meow Pizza notes.
+- `docs/`: the standard tycoon ad scenario, Meow Sakura build notes (`meow-sakura-build-notes.md`), and legacy Meow Pizza notes.
 
 ## Build
 

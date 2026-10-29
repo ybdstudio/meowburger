@@ -125,7 +125,7 @@ const Ads={
   /* cb gets {ended:true} (grant) | {ended:false} (closed early) | {error} */
   _show(key,cb){ if(Ads.busy) return cb({error:'busy'}); const pl=AD_PLACEMENTS[key], unit=key+':'+Date.now();
     Ads.busy=true; PF.emit('pause','ad'); const p={unit,cb,timer:0}; Ads.pending=p;
-    const A=Ads.adapter||window.MeowSakuraAds||window.MeowBurgerAds||null;
+    const A=Ads.adapter||window.MeowSakuraAds||null;
     if(!A) return Ads._mockShow(key,unit);
     p.timer=setTimeout(()=>Ads._done(unit,{error:'timeout'}),90000);
     try{ const pr=pl.type==='rewarded'?A.rewarded(pl.label):A.interstitial(pl.label);
