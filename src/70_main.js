@@ -100,7 +100,8 @@ async function boot(){
   }catch(err){console.error(err);showError(err.message||String(err))}
 }
 /* debug / test hooks (used by the automated playtest) */
-window.__cp={get S(){return S},player,get customers(){return customers},get workers(){return workers},get stations(){return stations},get tables(){return tables},get tray(){return tray},
+window.__cp={get S(){return S},player,burst,fly,emote,   /* burst/fly/emote: effect hooks for promo shots (tests) */
+  get customers(){return customers},get workers(){return workers},get stations(){return stations},get tables(){return tables},get tray(){return tray},
   TRAY_CAP,DEBUG,findPath,taskTarget,curTask,taskProgress,spotVisible,SPOTS,TASKS,UPG,PT,PADS,bins:()=>bins,carryMax,catOf,update:(dt)=>update(dt,{x:0,y:0,m:0}),
   buyUpgrade:(key)=>{for(const t in UPG){const r=UPG[t].rows.find(r=>r.key===key);if(r){const c=r.cost[S[key]];if(c===undefined||S.money<c)return false;S.money-=c;S[key]++;return true}}return false},
   ATLAS,ASSET_MANIFEST,ASSET_REPORT,render,PF,Ads,UI,AD_PLACEMENTS,onBought,rebuildWorld,refreshSolids,curStage,buildFloorCache:()=>buildFloorCache(TW),ENV,get paused(){return paused},get now(){return now},spawnCustomer,leave,CFG,stCap,orderLeft,trayTotal,itemPrice,walkable};
