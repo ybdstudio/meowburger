@@ -1,8 +1,8 @@
-# Meow Sakura notes
+# Meow Sakura — build notes
 - Owner's rule: keep every character exactly as in Meow Burger; only the restaurant and its graphics change (JP sakura kit `meow-jp-full`).
 - Target look = the kit's `00_overview/restaurant_full_game_jp.png` mockup: plank walls, lanterns, sakura branches, pennants, pink yatai stalls with noren, sakura trees, pink sakura VIP rug.
 
-# Meow Burger — build notes
+## Base game notes (Meow Burger, kept for the engine and layout)
 
 Base: Meow Pizza v4.8.0 engine (reskin of data + art). Customer flow kept as Pizza (player serves).
 

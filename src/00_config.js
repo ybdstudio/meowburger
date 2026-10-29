@@ -22,7 +22,7 @@ const CFG={
   decorBonus:0.05,          // +5% to every sale per decoration bought
   stageNames:['Chicken Corner','Meow Sakura Diner','Bigger Restaurant','Patio & Grand Opening'],
   minis:{clientKey:''},
-  /* Ad scenario v4.6 — Meow Pizza placements (labels match the Meow Sushi config). Times in seconds.
+  /* Ad scenario (engine v4.6) — Meow Sakura placements (labels match the HS dashboard). Times in seconds.
      Ads are shown through Ads.adapter (HS SDK goes there); without it a test ad is simulated. */
   ads:{
     doubleTask:{min:20, max:150, show:10, cd:45},  // x2 Task Bonus: after a task pays coins -> the same reward again (max 150)

@@ -41,7 +41,7 @@ var __NWIN,__NDOC;
     navigator:{userAgent:'TikTokMiniGame'},
     addEventListener:function(t,f){ if(t==='resize') resizeFns.push(f); }, removeEventListener:function(){},
     AudioContext: typeof T.createWebAudioContext==='function'?function(){ return T.createWebAudioContext(); }:undefined,
-    get MeowPizzaAds(){ return __GG.MeowPizzaAds; },
+    get MeowSakuraAds(){ return __GG.MeowSakuraAds; },
   };
   if(typeof T.onWindowResize==='function') T.onWindowResize(function(r){ vw=Number(r&&r.windowWidth)||vw; vh=Number(r&&r.windowHeight)||vh; resizeFns.forEach(function(f){try{f()}catch(e){}}); });
   /* monotonic clock: TikTok native has no global performance */

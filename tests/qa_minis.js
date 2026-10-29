@@ -153,7 +153,7 @@ async function boot(b,{sdk=false,vw=390,vh=844}={}){
   ok('detects TikTok SDK',await p.evaluate(()=>__cp.PF.mode==='tiktok'));
   await p.evaluate(()=>{window.__adLog=[];__cp.Ads.adapter={rewarded:l=>{__adLog.push('rw '+l);const m=window.__adMode||'ok';return new Promise((res,rej)=>setTimeout(()=>m==='err'?rej({code:1004}):res(m==='ok'),300))},interstitial:l=>{__adLog.push('in '+l);return Promise.resolve()}};const S=__cp.S;['register','oven1','table1','bin','table2','drink','renovate'].forEach(i=>S.bought[i]=true);S.task=__cp.TASKS.findIndex(t=>t.id==='t_pantry');S.mx.homeAsked=1;S.money=50});
   await p.waitForTimeout(2300);
-  ok('save goes to setStorageSync',await p.evaluate(()=>!!window.__store['catpizza.v3']));
+  ok('save goes to setStorageSync',await p.evaluate(k=>!!window.__store[k],(fs.readFileSync(require('path').join(__dirname,'..','src','00_config.js'),'utf8').match(/SAVE_KEY='([^']+)'/)||[])[1]));
   ok('safe area from getWindowInfo',await p.evaluate(()=>document.getElementById('wrap').style.getPropertyValue('--sat')==='47px'));
   ok('capsule width applied',await p.evaluate(()=>document.getElementById('wrap').classList.contains('has-cap')));
   await p.screenshot({path:OUT+'/16_tiktok_hud.png'});

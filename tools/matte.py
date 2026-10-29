@@ -1,4 +1,4 @@
-# Meow Burger matting v2: clean cut-outs from reference sheets.
+# Meow Sakura matting v2 (from Meow Burger): clean cut-outs from reference sheets.
 #  - light mode: background = light/neutral pixels connected to the crop border (flood through an eroded core, so
 #    small gaps in the outline do not leak into white fur), interior holes filled.
 #  - dark mode: background = near-black pixels connected to the border, then the coloured fringe the dark sheets
